@@ -151,8 +151,21 @@ WSGI_APPLICATION = 'backend.wsgi.application'
 
 # Configure database using DATABASE_URL; fall back to sqlite in memory when no
 # environment variable is available, e.g. during Docker build
-DATABASE_URL = os.environ.get('DATABASE_URL', 'sqlite://:memory:')
-DATABASES = {'default': dj_database_url.parse(DATABASE_URL)}
+# DATABASE_URL = os.environ.get('DATABASE_URL', 'sqlite://:memory:')
+# DATABASES = {'default': dj_database_url.parse(DATABASE_URL)}
+
+DATABASES = {
+    'default': {
+        'ENGINE': 'django.db.backends.postgresql',
+        'NAME': os.environ['DJANGOCMS_DB_NAME'],
+        'USER': os.environ['DJANGOCMS_DB_USER'],
+        'PASSWORD': os.environ['DJANGOCMS_DB_PWD'],
+        'HOST': os.environ['DJANGOCMS_DB_HOST'],
+        'PORT': os.environ['DJANGOCMS_DB_PORT']
+    }
+}
+
+
 
 DEFAULT_AUTO_FIELD = 'django.db.models.AutoField'
 
