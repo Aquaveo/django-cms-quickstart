@@ -75,11 +75,9 @@ set -e
         # popualte settings.py template file
 
         # sed -i "s/mysite/$1/g" $1/settings.py
-
-        if [ -z "${DJANGOCMS_SETUP}" ]; then
-                python manage.py collectstatic --noinput
-                python manage.py migrate
+        python manage.py collectstatic --noinput
+        python manage.py migrate
+        if [ -z "${SKIP_CREATION_USER}" ]; then
                 python manage.py createsuperuser --noinput --username $DJANGO_SUPERUSER_USERNAME --email $DJANGO_SUPERUSER_EMAIL
         fi
-        export DJANGOCMS_SETUP='done'
         python manage.py runserver 0.0.0.0:80
