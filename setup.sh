@@ -1,7 +1,7 @@
 #!/bin/bash -x
 
 
-set -e
+# set -e
         echo "$DJANGOCMS_ADMIN_DB_USER"
         echo "$DJANGOCMS_ADMIN_DB_PWD"
         if [ -z "${DJANGOCMS_DB_HOST}" ]; then
