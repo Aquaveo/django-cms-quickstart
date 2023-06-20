@@ -1,6 +1,5 @@
 from pathlib import Path
 import os
-import dj_database_url
 from django_storage_url import dsn_configured_storage_class
 
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
@@ -151,9 +150,6 @@ WSGI_APPLICATION = 'backend.wsgi.application'
 
 # Configure database using DATABASE_URL; fall back to sqlite in memory when no
 # environment variable is available, e.g. during Docker build
-# DATABASE_URL = os.environ.get('DATABASE_URL', 'sqlite://:memory:')
-# DATABASES = {'default': dj_database_url.parse(DATABASE_URL)}
-
 DATABASES = {
     'default': {
         'ENGINE': 'django.db.backends.postgresql',

@@ -18,7 +18,7 @@ createdatabase = """CREATE DATABASE %s WITH OWNER = '%s';""" % (sys.argv[2], sys
 checkdatabase = """SELECT COUNT(*) = 0 FROM pg_catalog.pg_database WHERE datname = '%s';""" % (sys.argv[2])
 
 try:
-
+    conn=None
     port = int(sys.argv[5]) # 5432
 
     s = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
@@ -28,7 +28,8 @@ try:
             s.close()
             break
         except socket.error as ex:
-            time.sleep(0.1)
+            print(ex)
+            time.sleep(0.3)
 
 #    conn=psycopg2.connect(host="localhost",database="postgres", user="postgres", password="" , port="5432")
     conn=psycopg2.connect(host=sys.argv[1],database="postgres", user=sys.argv[6], password=sys.argv[7], port=sys.argv[5])
