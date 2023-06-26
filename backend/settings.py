@@ -134,6 +134,7 @@ THUMBNAIL_PROCESSORS = (
 CMS_TEMPLATES = [
     # a minimal template to get started with
     ('minimal.html', 'Minimal template'),
+    ('dopetrope.html', 'Dopetrope template'),
 
     # optional templates that extend base.html, to be used with Bootstrap 5
     ('bootstrap5.html', 'Bootstrap 5 Demo'),
@@ -223,8 +224,13 @@ DefaultStorageClass = dsn_configured_storage_class('DEFAULT_STORAGE_DSN')
 DEFAULT_FILE_STORAGE = 'backend.settings.DefaultStorageClass'
 
 # only required for local file storage and serving, in development
-MEDIA_URL = 'media/'
+MEDIA_URL = '/media/'
 MEDIA_ROOT = os.path.join('/data/media/')
 
+# FORCE_SCRIPT_NAME = '/meta/'
+# LOGIN_REDIRECT_URL = '/meta/admin/'
+# LOGOUT_REDIRECT_URL = '/meta/'
+# LOGIN_URL="/admin/login/"
 
+# USE_X_FORWARDED_HOST = True
 SITE_ID = 1
