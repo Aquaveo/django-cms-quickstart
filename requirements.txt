@@ -117,6 +117,8 @@ djangocms-text-ckeditor==5.1.1
     #   djangocms-frontend
 djangocms-video==3.0.0
     # via -r requirements.in
+django-softhyphen    
+    # via -r requirements.in
 docutils==0.15.2
     # via botocore
 easy-thumbnails[svg]==2.8.3

@@ -62,4 +62,5 @@ if [ -z "${INTERNAL_PORT_RUN}" ]; then
 else
         echo >&2 "  INTERNAL_PORT_RUN found running on ${INTERNAL_PORT_RUN}"
         python manage.py runserver 0.0.0.0:${INTERNAL_PORT_RUN}
+        # uwsgi --http=0.0.0.0:${INTERNAL_PORT_RUN} --module=backend.wsgi
 fi
