@@ -57,7 +57,6 @@ INSTALLED_APPS = [
     "djangocms_style",
     "djangocms_googlemap",
     "djangocms_video",
-    "django_transfer",
     "djangocms_attributes_field",
     "djangocms_snippet",
     "djangocms_transfer",
