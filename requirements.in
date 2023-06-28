@@ -40,6 +40,7 @@ djangocms-frontend
 djangocms-snippet
 djangocms-attributes-field
 djangocms-transfer
+djangocms-history
 # Django Filer - optional, but used in most projects (alpha) - already implicitly installed through djangocms-file
 # https://github.com/django-cms/django-filer/archive/refs/tags/2.1.1.zip#egg=django-filer
 

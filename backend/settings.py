@@ -61,6 +61,7 @@ INSTALLED_APPS = [
     "djangocms_attributes_field",
     "djangocms_snippet",
     "djangocms_transfer",
+    "djangocms_history",
     # optional django CMS Frontend modules
     "djangocms_frontend",
     "djangocms_frontend.contrib.accordion",
