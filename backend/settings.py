@@ -131,7 +131,17 @@ THUMBNAIL_PROCESSORS = (
 
 CMS_TEMPLATES = [
     # a minimal template to get started with
-    ("full-width.html", "Modern Bussiness"),
+    ("morph.html", "morph"),
+    ("darkly.html", "darkly"),
+    ("flatly.html", "flatly"),
+    ("lux.html", "lux"),
+    ("materia.html", "materia"),
+    ("minty.html", "minty"),
+    ("slate.html", "slate"),
+    ("solar.html", "solar"),
+    ("spacelab.html", "spacelab"),
+    ("superhero.html", "superhero"),
+    ("bussiness.html", "modernbusiness"),
 ]
 
 WSGI_APPLICATION = "backend.wsgi.application"

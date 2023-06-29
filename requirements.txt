@@ -119,6 +119,10 @@ djangocms-video==3.0.0
     # via -r requirements.in
 django-softhyphen    
     # via -r requirements.in
+djangocms-snippet
+djangocms-attributes-field
+djangocms-transfer
+djangocms-history    
 docutils==0.15.2
     # via botocore
 easy-thumbnails[svg]==2.8.3
