@@ -142,6 +142,7 @@ CMS_TEMPLATES = [
     ("spacelab.html", "spacelab"),
     ("superhero.html", "superhero"),
     ("bussiness.html", "modernbusiness"),
+    ("tethys_main.html", "Tethys home page"),
 ]
 
 WSGI_APPLICATION = "backend.wsgi.application"
@@ -227,9 +228,9 @@ DEFAULT_FILE_STORAGE = "backend.settings.DefaultStorageClass"
 MEDIA_URL = "/media/"
 MEDIA_ROOT = os.path.join("/data/media/")
 
-# FORCE_SCRIPT_NAME = '/meta/'
+# FORCE_SCRIPT_NAME = "/meta/"
 # LOGIN_REDIRECT_URL = '/meta/admin/'
-# LOGOUT_REDIRECT_URL = '/meta/'
+# LOGOUT_REDIRECT_URL = "/meta/"
 # LOGIN_URL="/admin/login/"
 
 # USE_X_FORWARDED_HOST = True
