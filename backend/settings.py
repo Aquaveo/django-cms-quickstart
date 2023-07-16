@@ -1,6 +1,7 @@
 from pathlib import Path
 import os
-from django_storage_url import dsn_configured_storage_class
+
+# from django_storage_url import dsn_configured_storage_class
 
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
 BASE_DIR = Path(__file__).resolve().parent.parent
@@ -216,13 +217,13 @@ STATICFILES_STORAGE = "whitenoise.storage.CompressedManifestStaticFilesStorage"
 # DEFAULT_FILE_STORAGE is configured using DEFAULT_STORAGE_DSN
 
 # read the setting value from the environment variable
-DEFAULT_STORAGE_DSN = os.environ.get("DEFAULT_STORAGE_DSN")
+# DEFAULT_STORAGE_DSN = os.environ.get("DEFAULT_STORAGE_DSN")
 
 # dsn_configured_storage_class() requires the name of the setting
-DefaultStorageClass = dsn_configured_storage_class("DEFAULT_STORAGE_DSN")
+# DefaultStorageClass = dsn_configured_storage_class("DEFAULT_STORAGE_DSN")
 
 # Django's DEFAULT_FILE_STORAGE requires the class name
-DEFAULT_FILE_STORAGE = "backend.settings.DefaultStorageClass"
+DEFAULT_FILE_STORAGE = "django.core.files.storage.FileSystemStorage"
 
 # only required for local file storage and serving, in development
 MEDIA_URL = "/media/"
