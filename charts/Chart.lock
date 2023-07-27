@@ -1,0 +1,6 @@
+dependencies:
+- name: postgis
+  repository: oci://ghcr.io/romer8
+  version: 0.2.2
+digest: sha256:04b2dfdfa289445f609e73be801ed34a58f95a1a88bc3d90ec33cc115e3149c3
+generated: "2023-06-14T13:56:00.462532683-06:00"
