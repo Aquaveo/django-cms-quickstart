@@ -132,6 +132,7 @@ THUMBNAIL_PROCESSORS = (
 
 CMS_TEMPLATES = [
     # a minimal template to get started with
+    ("arcana.html", "arcana"),
     ("morph.html", "morph"),
     ("darkly.html", "darkly"),
     ("flatly.html", "flatly"),
@@ -144,6 +145,7 @@ CMS_TEMPLATES = [
     ("superhero.html", "superhero"),
     ("bussiness.html", "modernbusiness"),
     ("tethys_main.html", "Tethys home page"),
+    ("ciroh.html", "Ciroh"),
 ]
 
 WSGI_APPLICATION = "backend.wsgi.application"
