@@ -3,17 +3,17 @@ entries:
   djangocms:
   - apiVersion: v2
     appVersion: 1.16.0
-    created: "2023-09-14T20:58:42.772612029Z"
+    created: "2023-09-15T19:08:17.595118151Z"
     dependencies:
     - condition: postgis.enabled
       name: postgis
       repository: oci://ghcr.io/romer8
       version: '*'
     description: django-cms helm chart for the django-cms quickstart demo
-    digest: e39a7be07259be72402c33f7fcac59757d278f7daa20e9498feb7de76dd2801c
+    digest: bd49f0eb98aa325fd16cce7d5a75aa993f4372741c041505c1c53f1b2e04dcfa
     name: djangocms
     type: application
     urls:
     - https://Aquaveo.github.io/django-cms-quickstart/djangocms-0.1.0.tgz
     version: 0.1.0
-generated: "2023-09-14T20:58:42.769866991Z"
+generated: "2023-09-15T19:08:17.593432524Z"
