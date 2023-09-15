@@ -76,28 +76,29 @@
     </div>
     {% endplaceholder %}
     <footer id="site-footer" class="site-footer mt-auto container-fluid">
+
         {% static_placeholder "Footer" or %}
-    
-        <div class="row  align-items-center px-3 py-3">
-            <div class="col-md-5 py-3">
-            <div class="copyright-wrapper float-md-start">
-                <span class="copyright">Copyright © 2021 CIROH</span>
+            <div class="row  align-items-center px-3 py-3">
+                <div class="col-md-5 py-3">
+                <div class="copyright-wrapper float-md-start">
+                    <span class="copyright">Copyright © 2021 CIROH</span>
+                </div>
+                </div>
+                <div class="col-md-2 py-3">
+                <div class="documents-wrapper">
+                    
+                </div>
+                </div>
+                <div class="col-md-5 py-3">
+                <div class="tethys-attribution float-md-end">
+                    <span class="powered-by-tethys">Powered by <img class="ps-1" src="{% static 'images/ciroh/CIROHLogo.png' %}"  height="26px"> <a href="http://www.tethysplatform.org"> CIROH</a></span>
+                </div>
+                </div>
             </div>
-            </div>
-            <div class="col-md-2 py-3">
-            <div class="documents-wrapper">
-                
-            </div>
-            </div>
-            <div class="col-md-5 py-3">
-            <div class="tethys-attribution float-md-end">
-                <span class="powered-by-tethys">Powered by <img class="ps-1" src="{% static 'images/ciroh/CIROHLogo.png' %}"  height="26px"> <a href="http://www.tethysplatform.org"> CIROH</a></span>
-            </div>
-            </div>
-        </div>
-        {% endstatic_placeholder %}
         
-    </footer>
+        {% endstatic_placeholder %}
+</footer>
+
 {% endblock content %}
 
 
