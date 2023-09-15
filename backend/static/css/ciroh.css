@@ -70,7 +70,16 @@
     line-height: 25px;
     font-weight: 300;
 }
-
+.card-h5 {
+    margin-top: 0px;
+    margin-bottom: 20px;
+    color: rgb(103, 103, 112);
+    font-size: 18px;
+    line-height: 20px;
+    font-weight: 300;
+    letter-spacing: 4px;
+    text-transform: uppercase;
+}
 
 .white-box-transparent {
     padding: 15px;
@@ -138,6 +147,21 @@
     font-size: 14px;
     line-height: 25px;
     font-weight: 300;
+}
+
+
+.footer-link {
+    display: block;
+    margin-bottom: 6px;
+    padding-bottom: 10px;
+    border-bottom: 1px solid rgb(213, 213, 224);
+    color: rgb(102, 140, 173);
+    font-size: 14px;
+    font-weight: 300;
+    text-decoration: none;
+}
+.footer-link:hover {
+    color: rgba(0, 140, 255, 0.84);
 }
 @font-face {
     font-family: 'Open Sans';
