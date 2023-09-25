@@ -132,7 +132,6 @@ THUMBNAIL_PROCESSORS = (
 
 CMS_TEMPLATES = [
     # a minimal template to get started with
-    ("arcana.html", "arcana"),
     ("morph.html", "morph"),
     ("darkly.html", "darkly"),
     ("flatly.html", "flatly"),

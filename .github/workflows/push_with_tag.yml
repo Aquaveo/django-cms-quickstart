@@ -3,8 +3,8 @@ name: push_commits_no_tag
 # Push to docker hub if no tag has been created.
 on:
   push:
-    branches:
-      - 'main'
+    tags:
+      - '*'
 
 env:
   IMAGE_TAG: dev_${GITHUB_SHA}
@@ -28,11 +28,13 @@ jobs:
       - name: Set Tag
         run: |
           echo "TAG=${{ env.IMAGE_TAG }}" >> $GITHUB_ENV
+          echo "TAG_LATEST=latest" >> $GITHUB_ENV
         # If the branch is stable, we'll overwrite the TAG to include stable.
       - name: Set Stable Tag
         if: endsWith(github.ref, '/stable')
         run: |
           echo "TAG=stable" >> $GITHUB_ENV
+
       - name: Test Tag
         run: |
           echo $TAG
@@ -52,6 +54,14 @@ jobs:
           cache-from: type=registry,ref=${{ env.DOCKER_HUB_ORG }}/${{ env.DOCKER_REPO }}-cache:latest
           cache-to: type=registry,ref=${{ env.DOCKER_HUB_ORG }}/${{ env.DOCKER_REPO }}-cache:latest,mode=max
 
+      - name: build and push latest tag
+        uses: docker/build-push-action@v4
+        with:
+          context: .
+          push: true
+          tags: ${{ env.DOCKER_HUB_ORG }}/${{ env.DOCKER_REPO }}:${{ env.TAG_LATEST }}
+          cache-from: type=registry,ref=${{ env.DOCKER_HUB_ORG }}/${{ env.DOCKER_REPO }}-cache:latest
+          cache-to: type=registry,ref=${{ env.DOCKER_HUB_ORG }}/${{ env.DOCKER_REPO }}-cache:latest,mode=max
   startup_test:
     needs: [build]
     runs-on: ubuntu-latest
