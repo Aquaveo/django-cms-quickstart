@@ -38,8 +38,17 @@
   <nav id="header-navbar" class="navbar navbar-expand-md navbar-dark shadow px-4 py-3 mx-3" style="background-color: #0a62a9;">
       <div class="container-fluid">
           <a id="header-brand" class="navbar-brand" href="/">
-              <img src="/static/tethys_portal/images/tethys-logo-25.png" alt="" class="d-inline-block align-text-top">
-              CIROH
+            <div class="ciroh-logo-name-header">
+                <div class="flex-logos-header">
+                    <img src='{% static "images/ciroh/NOAA-150x150.png" %}' alt="d-inline-block align-text-top">
+                    <img src='{% static "images/ciroh/CIROHLogo_200x200.png" %}' alt="d-inline-block align-text-top">   
+                </div>
+                 <span class="text-ciroh">
+                    Cooperative Institute for Research to Operations in Hydrology
+                 </span>
+            </div>
+
+              
           </a>
         <button id="header-toggler" class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#header-navbar-nav" aria-controls="header-navbar-nav" aria-expanded="false" aria-label="Toggle navigation">
           <span class="navbar-toggler-icon"></span>

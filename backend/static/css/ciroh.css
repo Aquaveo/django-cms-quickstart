@@ -1,5 +1,22 @@
 
+.ciroh-logo-name-header{
+    display: flex;
+}
 
+.flex-logos-header{
+    display: flex;
+}
+.flex-logos-header img{    
+    height: 45px;
+}
+.text-ciroh{
+    text-wrap: wrap;
+    width: 55%;
+    display: block;
+    text-align: center;
+    font-size: 16px;
+    color: #8cacc6;
+}
 .hero-heading {
     margin-bottom: 30px;
     color: white;
