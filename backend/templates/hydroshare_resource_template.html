@@ -1,25 +1,23 @@
 {% load sekizai_tags %}
 {% addtoblock "js" %}
 <script type="text/javascript">
+
+
   document.addEventListener('DOMContentLoaded', function () {
-    const helpIcons = document.querySelectorAll('.helpicon');
-    const spans = document.querySelectorAll('span');
-    const truncatedElements = document.querySelectorAll('.truncate');
-  
-    helpIcons.forEach(function (icon) {
-      icon.addEventListener('click', function () {
-        truncatedElements.forEach(function (element) {
-          element.classList.add('truncated');
-        });
+    //const helpIcons = document.querySelectorAll('.helpicon');
+    //const spans = document.querySelectorAll('span');
+    //const truncatedElements = document.querySelectorAll('.truncate');
+
+    const helpIcon = document.getElementById('helpicon-{{ instance.unique_identifier }}');
+    const spanElement = document.getElementById('span-{{ instance.unique_identifier }}');
+    const truncatedElement = document.getElementById('truncate-{{ instance.unique_identifier }}');
+
+    helpIcon.addEventListener('click', function () {
+        truncatedElement.classList.add('truncated');
       });
-    });
   
-    spans.forEach(function (span) {
-      span.addEventListener('click', function () {
-        truncatedElements.forEach(function (element) {
-          element.classList.remove('truncated');
-        });
-      });
+    spanElement.addEventListener('click', function () {
+        truncatedElement.classList.remove('truncated');
     });
   });
   //<p class="card-text d-inline-block text-truncate my-2 fs-8 lh-1.5 fw-light" style="max-width:300px;">{{ instance.description }}</p>
@@ -33,6 +31,7 @@
   .truncate {
     position: relative;
     max-width:350px;
+    width: 350px;
     /* need automatic multi-line height */
     white-space: nowrap;
     overflow: hidden;
@@ -73,24 +72,27 @@
         <div class="card-body">
           <h5 class="card-title card-h5">{{ instance.title }}</h5>
           <p class="card-subtitle mb-2 text-muted fst-italic">{{ instance.subtitle }}</p>
-          <p class="card-text truncate">
+          <p id="truncate-{{ instance.unique_identifier }}" class="card-text truncate">
             {{ instance.description }}
-            <a class="helpicon text-decoration-none text-secondary" href="#">
+            <a id="helpicon-{{ instance.unique_identifier }}" class="helpicon text-decoration-none text-secondary" href="#">
               <i class="bi bi-chevron-compact-down"></i>
             </a>
-            <span><i class="bi bi-chevron-compact-up"></i></span>
+            <span id="span-{{ instance.unique_identifier }}"><i class="bi bi-chevron-compact-up"></i></span>
           </p>
-          <p class="card-text my-2 fs-6 lh-1.5 fw-light d-flex flex-row justify-content-between w-25"  style="max-width:300px;">
-            {% if instance.github_url %}
-              <a href="{{ instance.github_url }}" class="text-decoration-none text-secondary" title="github"> <i class="bi bi-github"></i></a>
-            {% endif %}
-            {% if instance.web_site_url %}
-              <a href="{{ instance.web_site_url }}" class="text-decoration-none text-secondary" title="web page"> <i class="bi bi-journals"></i></a>
-            {% endif %}
-            {% if instance.documentation_url %}
-              <a href="{{ instance.documentation_url }}" class="text-decoration-none text-secondary" title="documentation"> <i class="bi bi-arrow-up-right-square"></i></a>
-            {% endif %}
-          </p>
+          <div>
+            <p class="card-text my-2 fs-6 lh-1.5 fw-light d-flex flex-row justify-content-between w-25"  style="max-width:300px;">
+              {% if instance.github_url %}
+                <a href="{{ instance.github_url }}" class="text-decoration-none text-secondary" title="github"> <i class="bi bi-github"></i></a>
+              {% endif %}
+              {% if instance.web_site_url %}
+                <a href="{{ instance.web_site_url }}" class="text-decoration-none text-secondary" title="web page"> <i class="bi bi-journals"></i></a>
+              {% endif %}
+              {% if instance.documentation_url %}
+                <a href="{{ instance.documentation_url }}" class="text-decoration-none text-secondary" title="documentation"> <i class="bi bi-arrow-up-right-square"></i></a>
+              {% endif %}
+            </p>
+          </div>
+
 
         </div>
       </div>

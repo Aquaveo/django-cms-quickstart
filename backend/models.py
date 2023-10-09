@@ -1,6 +1,7 @@
 from cms.models.pluginmodel import CMSPlugin
 
 from django.db import models
+import uuid
 
 class HydroShareResource(CMSPlugin):
     title = models.CharField(max_length=50, default='resource title')
@@ -10,3 +11,4 @@ class HydroShareResource(CMSPlugin):
     github_url=models.CharField(max_length=50, default='', blank=True)
     documentation_url=models.CharField(max_length=50, default='', blank=True)
     web_site_url=models.CharField(max_length=50, default='', blank=True)
+    unique_identifier=models.UUIDField(default=uuid.uuid4, editable=False)
