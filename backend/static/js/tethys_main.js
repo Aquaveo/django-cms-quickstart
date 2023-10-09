@@ -14,12 +14,12 @@ document.addEventListener("DOMContentLoaded", function(){
             document.getElementById('header-navbar').classList.add('fixed-top');
             document.getElementById('header-navbar').classList.remove('mx-5');
             // add padding top to clear-header element
-            document.querySelector('.clear-header').style.paddingTop = navbar_height + 'px';
+            // document.querySelector('.clear-header').style.paddingTop = navbar_height + 'px';
           } else {
             document.getElementById('header-navbar').classList.remove('fixed-top');
             document.getElementById('header-navbar').classList.add('mx-5');
             // remove padding top from clear-header element
-            document.querySelector('.clear-header').style.paddingTop = 0;
+            // document.querySelector('.clear-header').style.paddingTop = 0;
           }
         }
     });
