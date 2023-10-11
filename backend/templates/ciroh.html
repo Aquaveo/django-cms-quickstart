@@ -40,9 +40,9 @@
 {% block navbar %}
 
 
-<header id="site-header" class="site-header container-fluid">
+<header id="site-header" class="site-header">
   <div id="header-spacer" class="w-100 my-8"><p></p></div>
-  <nav id="header-navbar" class="navbar navbar-expand-md shadow px-4 py-3 mx-3" data-bs-theme="dark">
+  <nav id="header-navbar" class="navbar navbar-expand-md shadow py-3" data-bs-theme="dark">
       <div class="container-fluid">
           <a id="header-brand" class="navbar-brand" href="/">
             <div class="ciroh-logo-name-header">
@@ -94,23 +94,94 @@
     <footer id="site-footer" class="site-footer mt-auto container-fluid">
 
         {% static_placeholder "Footer" or %}
-            <div class="row  align-items-center px-3 py-3">
-                <div class="col-md-5 py-3">
-                <div class="copyright-wrapper float-md-start">
-                    <span class="copyright">Copyright © 2021 CIROH</span>
+            <div class="container container-fluid">
+                <div class="row footer__links">
+                    <div class="col footer__col">
+                        <div class="footer__title">
+                            CIROH
+                        </div>
+                        <ul class="footer__items clean-list">
+                            <li class="footer__item">
+                                <a class="footer__link-item" href="https://ciroh.ua.edu/about/">
+                                    About CIROH
+                                </a>
+                            </li>
+                            <li class="footer__item">
+                                <a class="footer__link-item" href="https://ciroh.ua.edu/about/ciroh-partners/">
+                                    CIROH Members and Partners
+                                </a>
+                            </li>
+
+                            <li class="footer__item">
+                                <a class="footer__link-item" href="https://ciroh.ua.edu/contact-us/">
+                                    Contact CIROH
+                                </a>
+                            </li>
+                            
+                        </ul>
+                    </div>
+                    <div class="col footer__col">
+                        <div class="footer__title">
+                            Community
+                        </div>
+                        <ul class="footer__items clean-list">
+                            <li class="footer__item">
+                                <a href="https://www.linkedin.com/company/uaciroh/" target="_blank" rel="noopener noreferrer" class="footer__link-item">
+                                    LinkedIn
+                                    <svg width="13.5" height="13.5" aria-hidden="true" viewBox="0 0 24 24" class="iconExternalLink_nPIU">
+                                        <path fill="currentColor" d="M21 13v10h-21v-19h12v2h-10v15h17v-8h2zm3-12h-10.988l4.035 4-6.977 7.07 2.828 2.828 6.977-7.07 4.125 4.172v-11z">
+
+                                        </path>
+                                    </svg>
+                                </a>
+                            </li>
+                            <li class="footer__item">
+                                <a href="https://twitter.com/UA_CIROH" target="_blank" rel="noopener noreferrer" class="footer__link-item">
+                                    Twitter
+                                    <svg width="13.5" height="13.5" aria-hidden="true" viewBox="0 0 24 24" class="iconExternalLink_nPIU">
+                                        <path fill="currentColor" d="M21 13v10h-21v-19h12v2h-10v15h17v-8h2zm3-12h-10.988l4.035 4-6.977 7.07 2.828 2.828 6.977-7.07 4.125 4.172v-11z">
+
+                                        </path>
+                                    </svg>
+                                </a>
+                            </li>
+                        </ul>
+                    </div>
+                    <div class="col footer__col">
+                        <div class="footer__title">
+                            More
+                        </div>
+                        <ul class="footer__items clean-list">
+                            <li class="footer__item">
+                                <a href="https://github.com/CIROH-UA" target="_blank" rel="noopener noreferrer" class="footer__link-item">
+                                    GitHub
+                                    <svg width="13.5" height="13.5" aria-hidden="true" viewBox="0 0 24 24" class="iconExternalLink_nPIU">
+                                        <path fill="currentColor" d="M21 13v10h-21v-19h12v2h-10v15h17v-8h2zm3-12h-10.988l4.035 4-6.977 7.07 2.828 2.828 6.977-7.07 4.125 4.172v-11z">
+
+                                        </path>
+                                    </svg>
+                                </a>
+                            </li>
+                        </ul>
+                    </div>
                 </div>
-                </div>
-                <div class="col-md-2 py-3">
-                <div class="documents-wrapper">
-                    
-                </div>
-                </div>
-                <div class="col-md-5 py-3">
-                <div class="tethys-attribution float-md-end">
-                    <span class="powered-by-tethys">Powered by <img class="ps-1" src="{% static 'images/ciroh/CIROHLogo.png' %}"  height="26px"> <a href="http://www.tethysplatform.org"> CIROH</a></span>
-                </div>
+                <div class="footer__bottom text--center">
+                    <div class="footer__copyright">
+                        <p>Copyright © 2023 2023 Cooperative Institute for Research to Operations in Hydrology</p>
+                        <p>
+                            This site is developed and maintained by the 
+                            <a href="https://hydroinformatics.byu.edu/" target="_blank" rel="noopener noreferrer" class="footer__link-item">
+                                Brigham Young University Hydroinformatics Lab
+                            </a>
+                            
+                             contact us to add your content to this page.
+                        </p>
+                        
+
+                    </div>
                 </div>
             </div>
+        </footer>
         
         {% endstatic_placeholder %}
 </footer>
