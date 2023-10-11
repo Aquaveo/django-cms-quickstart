@@ -191,23 +191,6 @@ h1, h2 {
 }
 
 
-.footer-link {
-    display: block;
-    margin-bottom: 6px;
-    padding-bottom: 10px;
-    border-bottom: 1px solid rgb(213, 213, 224);
-    color: rgb(102, 140, 173);
-    font-size: 14px;
-    font-weight: 300;
-    text-decoration: none;
-}
-.footer-link:hover {
-    color: rgba(0, 140, 255, 0.84);
-}
-.site-footer {
-    background-color: #255f9c;
-    z-index: 100;
-}
 
 
 /* .site-header .navbar {
@@ -252,4 +235,10 @@ h1, h2 {
 .clean-list{
     list-style: none;
     padding-left:0;
+}
+.footer__copyright p{
+    margin-bottom: 0;
+}
+.small-text-footer{
+    font-size: 12px;
 }
