@@ -17,15 +17,13 @@
         .section-accent {
             padding-top: 195px;
             padding-bottom: 195px;
-            background-image: url('{% static  "images/ciroh/water_data.jpeg" %}');
-            background-size: cover;
+            background-color: url('{% static  "images/ciroh/water_data.jpeg" %}');
             text-align: center;
-            background-repeat: no-repeat;
         }
         .section-datasets {
             padding-top: 100px;
             padding-bottom: 100px;
-            background-image: url('{% static  "images/ciroh/black_water.jpeg" %}');
+            background-color: #19a7ce;
             background-size: cover;
             text-align: center;
             background-repeat: no-repeat;
@@ -34,16 +32,17 @@
 {% endblock %}
 {% block base_js %}
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.2.1/dist/js/bootstrap.bundle.min.js" integrity="sha384-u1OknCvxWvY5kfmNBILK2hRnQC3Pr17a+RTT6rIHI7NnikvbZlHgTPOOmMi466C8" crossorigin="anonymous"></script>
-    <script src="{% static "js/tethys_main.js" %}"></script>
+    <script src="{% static "js/ciroh/ciroh.js" %}"></script>
 
     {% endblock %}
 
 {% block title %} {% page_attribute "page_title" %} {% endblock %}
 {% block navbar %}
 
+
 <header id="site-header" class="site-header container-fluid">
   <div id="header-spacer" class="w-100 my-8"><p></p></div>
-  <nav id="header-navbar" class="navbar navbar-expand-md navbar-dark shadow px-4 py-3 mx-3" style="background-color: #0a62a9;">
+  <nav id="header-navbar" class="navbar navbar-expand-md shadow px-4 py-3 mx-3" data-bs-theme="dark">
       <div class="container-fluid">
           <a id="header-brand" class="navbar-brand" href="/">
             <div class="ciroh-logo-name-header">
@@ -52,7 +51,7 @@
                     <img src='{% static "images/ciroh/CIROHLogo_200x200.png" %}' alt="d-inline-block align-text-top">   
                 </div>
                  <span class="text-ciroh">
-                    Cooperative Institute for Research to Operations in Hydrology
+                    Ciroh Portal
                  </span>
             </div>
 
