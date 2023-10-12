@@ -54,9 +54,11 @@
     top:0;
     position: absolute;
   }
+
+
 </style>
 {% endaddtoblock %}
-<div class="card border-light mb-3 w-100" >
+<div class="card border-light mb-3 w-100 card-height" >
     <div class="row g-0">
       <div class="col-md-4">
         {% if instance.web_site_url  %} 
@@ -65,7 +67,7 @@
           </a>
         {% else %}
           <a href='javascript:void(0)' class='portfolio-link'>
-            <img src="{{ instance.image }}" class="img-fluid rounded-start" alt="...">
+            <img src="{{ instance.image }}" class="img-fluid rounded-start h-100" alt="...">
           </a>
         {% endif %}
       </div>
