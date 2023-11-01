@@ -7,6 +7,8 @@ class HydroShareResource(CMSPlugin):
     title = models.CharField(max_length=200, default='resource title')
     subtitle = models.CharField(max_length=200, default='resource subtitle')
     image = models.CharField(max_length=200, default='https://placehold.co/400')
+    width= models.IntegerField(default=200)
+    height=models.IntegerField(default=200)
     description= models.TextField(default='resource description')
     github_url=models.CharField(max_length=200, default='', blank=True)
     documentation_url=models.CharField(max_length=200, default='', blank=True)
