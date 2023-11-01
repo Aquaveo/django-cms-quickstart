@@ -4,6 +4,10 @@
 
 
   document.addEventListener('DOMContentLoaded', function () {
+    //const helpIcons = document.querySelectorAll('.helpicon');
+    //const spans = document.querySelectorAll('span');
+    //const truncatedElements = document.querySelectorAll('.truncate');
+
     const helpIcon = document.getElementById('helpicon-{{ instance.unique_identifier }}');
     const spanElement = document.getElementById('span-{{ instance.unique_identifier }}');
     const truncatedElement = document.getElementById('truncate-{{ instance.unique_identifier }}');
@@ -27,7 +31,6 @@
     --image-width: {{ instance.width }}px;
     --image-height: {{ instance.height }}px;
   }
-
   .truncate {
     position: relative;
     max-width:90%;
@@ -54,42 +57,27 @@
     top:0;
     position: absolute;
   }
-
   .img-tile{
     object-fit: cover;
-    width: var(--image-width); 
-    height: var(--image-height);
-    max-height: var(--image-height);
-    max-width:  var(--image-width);
   }
 
-  .aspect-ratio-box{
-    display: flex;
-    justify-content: center;
-    height: var(--image-height);
-    width:  var(--image-width);
-  }
-  .a-tag-img{
-    width: fit-content;
-  }
 
 </style>
 {% endaddtoblock %}
 <div class="card border-light mb-3 w-100 card-height" >
     <div class="row g-0">
-   
-        <div class="aspect-ratio-box col-md-3" >
-          {% if instance.web_site_url  %} 
-            <a href="{{ instance.web_site_url }}" class="a-tag-img">
-              <img src="{{ instance.image }}" class="img-tile" alt="...">
-            </a>
-          {% else %}
-            <a href='javascript:void(0)' class='a-tag-img portfolio-link'>
-              <img src="{{ instance.image }}" class="img-tile" alt="...">
-            </a>
-          {% endif %}
-        </div>
-      <div class="col-md-9">
+      <div class="col-md-4 col-lg-4" style="min-width:{{ instance.width }}px; min-height:{{ instance.height }}px; width:fit-content; height:{{ instance.height }}px;">
+        {% if instance.web_site_url  %} 
+          <a href="{{ instance.web_site_url }}">
+            <img src="{{ instance.image }}" class="img-tile img-fluid rounded-start" alt="..."  style="width:{{ instance.width }}px; height:{{ instance.height }}px;">
+          </a>
+        {% else %}
+          <a href='javascript:void(0)' class='portfolio-link'>
+            <img src="{{ instance.image }}" class="img-tile img-fluid rounded-start h-100" alt="..." style="width:{{ instance.width }}px; height:{{ instance.height }}px;">
+          </a>
+        {% endif %}
+      </div>
+      <div class="col-md-8 col-lg-8">
         <div class="card-body">
           <h5 class="card-title card-h5">{{ instance.title }}</h5>
           <div style="width:fit-content;">
