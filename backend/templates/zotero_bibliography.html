@@ -24,7 +24,7 @@
     .wrapper-publication-set{
     }
     .year-style{
-        padding-top: 2rem;
+        padding-top: 1rem;
     }
 </style>
 {% endaddtoblock %}
@@ -32,10 +32,14 @@
     {% for key, values in instance.html.items %}
     <div class="wrapper-publication-set">
         <h2 class="year-style">{{ key }}</h2>
-        {% for citation in values %}   
-            {{ citation | safe }}
-        {% endfor %}
+        <ul>
+            {% for citation in values %}
+            <li>
+                {{ citation | safe }}
+
+            </li>
+            {% endfor %}
+        </ul>
     </div>
     {% endfor %}
-
 </div>
