@@ -21,10 +21,21 @@
         padding-left: 1em; 
         text-indent:-1em;
     }
+    .wrapper-publication-set{
+    }
+    .year-style{
+        padding-top: 2rem;
+    }
 </style>
 {% endaddtoblock %}
 <div>
-    {% for citation in instance.html.bib %}
-        {{ citation | safe }}
+    {% for key, values in instance.html.items %}
+    <div class="wrapper-publication-set">
+        <h2 class="year-style">{{ key }}</h2>
+        {% for citation in values %}   
+            {{ citation | safe }}
+        {% endfor %}
+    </div>
     {% endfor %}
+
 </div>

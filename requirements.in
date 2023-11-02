@@ -45,3 +45,4 @@ djangocms-history
 # https://github.com/django-cms/django-filer/archive/refs/tags/2.1.1.zip#egg=django-filer
 
 pip-tools  # needed for compilation of this file into requirements.txt, see start of file
+pyzotero

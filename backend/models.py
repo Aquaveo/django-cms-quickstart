@@ -1,7 +1,12 @@
 from cms.models.pluginmodel import CMSPlugin
 from django.core.validators import MaxValueValidator, MinValueValidator 
 from django.db import models
+from pyzotero import zotero
+import datetime
 import uuid
+from django.db.models.signals import pre_save
+from django.dispatch import receiver
+
 
 class HydroShareResource(CMSPlugin):
     title = models.CharField(max_length=200, default='resource title')
@@ -27,19 +32,43 @@ class ZoteroBibliographyResource(CMSPlugin):
     api_key = models.CharField(max_length=200, default='api_key')
     library_type=models.CharField(max_length=200, default='user')
     library_id = models.CharField(max_length=200, default='library_id')
-    collection_id = models.CharField(max_length=200, default='library_id')
+    collection_id = models.CharField(max_length=200, default='collection_id', blank=True)
     style= models.CharField(max_length=200, default='apa')
     html=models.JSONField(editable=False)
     unique_identifier=models.UUIDField(default=uuid.uuid4, editable=False)
     
-    def __init__(self, *args, **kwargs):
-        super().__init__(*args, **kwargs)
-        # add your own logic
-        # zotero_base_url = 'https://api.zotero.org'/groups/2834237/collections/VR8U3MFZ/items?format=json&include=bib,data&style=apa&key=Br5u8p81bg4nGJMH7Mti9Qag
-        html={
-            "bib":[
-                "<div class=\"csl-bib-body\" style=\"line-height: 2; padding-left: 1em; text-indent:-1em;\">\n  <div class=\"csl-entry\">Maidment, D. R. (2005). <i>Hydrologic Information System Status Report</i>. CUAHSI. https://hydrology.usu.edu/dtarb/HISStatusSept15.pdf</div>\n</div>",
-                "<div class=\"csl-bib-body\" style=\"line-height: 2; padding-left: 1em; text-indent:-1em;\">\n  <div class=\"csl-entry\">Elkin Giovanni Romero Bustamante, E. James Nelson, Ames, D. P., Gustavious Williams, Norm Jones, Boldrini, E., &amp; Chernov, I. (2021). <i>Water Data Explorer</i> (1.1.0). Zenodo. https://doi.org/10.5281/ZENODO.4678966</div>\n</div>"
-            ]
-        }
-        self.html = html
+    
+@receiver(pre_save, sender=ZoteroBibliographyResource)
+def create_html_citations(sender, instance, *args, **kwargs):
+
+    zot = zotero.Zotero(instance.library_id, instance.library_type, instance.api_key)
+    include_fields='bib,data'
+    print(instance.collection_id)
+    # if instance.collection_id != 'collection_id' and  instance.collection_id:
+    #     items = zot.collection_items(collectionID=instance.collection_id, style=instance.style, include=include_fields)
+    # else:
+    items = zot.items(style=instance.style, include=include_fields, sort="date")
+    # 2080-03 was put ion order to have the publications without date at the end
+    # items = sorted(items, key=lambda item:datetime.datetime.strptime(item['meta'].get('parsedDate','2080-03').split('-')[0], "%Y"))
+
+    # Initialize a dictionary to store publications by year
+    publications_by_year = {}
+
+    # Iterate through the data and populate the dictionary
+    for item in items:
+        # Extract the year from "parsedDate" (if available)
+        parsed_date = item.get("meta", {}).get("parsedDate", "")
+        year = parsed_date.split("-")[0] if parsed_date else "More Publications"
+
+        # Add the publication to the corresponding year's list
+        if year not in publications_by_year:
+            publications_by_year[year] = []
+        publications_by_year[year].append(item["bib"])
+
+    print(publications_by_year)
+    # html_list = [item["bib"] for item in items]
+
+    html={
+        "bib":publications_by_year
+    }
+    instance.html = publications_by_year     
