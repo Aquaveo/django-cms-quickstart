@@ -1,0 +1,30 @@
+{% load sekizai_tags %}
+{% load cms_tags %}
+
+{% addtoblock "js" %}
+<script type="text/javascript">
+
+</script>
+{% endaddtoblock %}
+{% addtoblock "css" %}
+<style>
+    .csl-entry {
+        word-wrap: break-word;
+        margin: 0 !important;
+    }
+    .csl-entry,
+    .csl-entry * {
+        box-sizing: content-box;
+    }
+    .csl-bib-body{
+        line-height: 2; 
+        padding-left: 1em; 
+        text-indent:-1em;
+    }
+</style>
+{% endaddtoblock %}
+<div>
+    {% for citation in instance.html.bib %}
+        {{ citation | safe }}
+    {% endfor %}
+</div>
