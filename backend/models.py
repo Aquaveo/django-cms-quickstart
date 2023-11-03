@@ -20,13 +20,6 @@ class HydroShareResource(CMSPlugin):
     web_site_url=models.CharField(max_length=200, default='', blank=True)
     unique_identifier=models.UUIDField(default=uuid.uuid4, editable=False)
 
-# class ZoteroCitationResource(CMSPlugin):
-#     authors = models.CharField(max_length=200, default='Publication Authors')
-#     date=models.CharField(max_length=200, default='Publication Date')
-#     title = models.CharField(max_length=200, default='Publication Title')
-#     publication = models.CharField(max_length=200, default='Publication Title/Publisher Title')
-#     doi=models.CharField(max_length=200, default='Publication DOI')
-#     unique_identifier=models.UUIDField(default=uuid.uuid4, editable=False)
 
 class ZoteroBibliographyResource(CMSPlugin):
     api_key = models.CharField(max_length=200, default='')
