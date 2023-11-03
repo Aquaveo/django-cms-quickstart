@@ -14,7 +14,6 @@ class HydroShareResourcePlugin(CMSPluginBase):
         context = super().render(context, instance, placeholder)
         return context
 
-
 @plugin_pool.register_plugin
 class ZoteroBibliographyResourcePlugin(CMSPluginBase):
     model = ZoteroBibliographyResource
