@@ -2,6 +2,9 @@ from cms.plugin_base import CMSPluginBase
 from cms.plugin_pool import plugin_pool
 from django.utils.translation import gettext_lazy as _
 from .models import HydroShareResource,ZoteroBibliographyResource
+import logging
+
+logger = logging.getLogger(__name__)
 
 @plugin_pool.register_plugin
 class HydroShareResourcePlugin(CMSPluginBase):
@@ -21,6 +24,11 @@ class ZoteroBibliographyResourcePlugin(CMSPluginBase):
     render_template = "zotero_bibliography.html"
     cache = False
 
+    #This is key in order to call the API every time the page renders
+    #The instance.save calls the pre_save signal which makes the call of the API
     def render(self, context, instance, placeholder):
+        instance.updated_version = instance.updated_version + 1
+        instance.save(update_fields=['updated_version'])
         context = super().render(context, instance, placeholder)
         return context
+      

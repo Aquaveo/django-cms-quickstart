@@ -4,9 +4,11 @@ from django.db import models
 from pyzotero import zotero
 import datetime
 import uuid
-from django.db.models.signals import pre_save
+from django.db.models.signals import pre_save, post_save
 from django.dispatch import receiver
+import logging
 
+logger = logging.getLogger(__name__)
 
 class HydroShareResource(CMSPlugin):
     title = models.CharField(max_length=200, default='resource title')
@@ -29,14 +31,18 @@ class ZoteroBibliographyResource(CMSPlugin):
     style= models.CharField(max_length=200, default='apa')
     html=models.JSONField(editable=False)
     unique_identifier=models.UUIDField(default=uuid.uuid4, editable=False)
-    
+    updated_version=models.IntegerField(default=0, editable=False)
+    name_of_page_created = models.CharField(max_length=200, default='', blank=True)
+    link_of_library_or_collection = models.CharField(max_length=400, default='')
     
 @receiver(pre_save, sender=ZoteroBibliographyResource)
 def create_html_citations(sender, instance, *args, **kwargs):
     params = {
         'include': 'bib,data',
         'style': 'apa',
-        'sort': 'date'
+        'sort': 'date',
+        'direction': 'desc',
+        'linkwrap': 1
     }
     try:
         zot = zotero.Zotero(instance.library_id, instance.library_type, instance.api_key)
@@ -58,11 +64,10 @@ def create_html_citations(sender, instance, *args, **kwargs):
                 publications_by_year[year] = []
             publications_by_year[year].append(item["bib"])
 
-        instance.html = publications_by_year                 
+        instance.html = publications_by_year
     except Exception as e:
         instance.html = {
             "Error":[
                 f'The following error: {e}'
             ]
         }
-
