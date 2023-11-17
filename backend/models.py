@@ -32,7 +32,6 @@ class ZoteroBibliographyResource(CMSPlugin):
     html=models.JSONField(editable=False)
     unique_identifier=models.UUIDField(default=uuid.uuid4, editable=False)
     updated_version=models.IntegerField(default=0, editable=False)
-    name_of_page_created = models.CharField(max_length=200, default='', blank=True)
     link_of_library_or_collection = models.CharField(max_length=400, default='')
     
 @receiver(pre_save, sender=ZoteroBibliographyResource)

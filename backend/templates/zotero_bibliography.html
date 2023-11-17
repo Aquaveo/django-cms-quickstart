@@ -8,6 +8,10 @@
 {% endaddtoblock %}
 {% addtoblock "css" %}
 <style>
+    @import url('https://fonts.googleapis.com/css?family=Open+Sans&display=swap');
+    .container-zotero-plugin{
+        font-family: 'Open Sans', sans-serif !important;
+    }
     .csl-entry {
         word-wrap: break-word;
         margin: 0 !important;
@@ -80,7 +84,7 @@
 
 </style>
 {% endaddtoblock %}
-<div>
+<div class="container-zotero-plugin">
     <div>
         <h1 class="title-tooltip">Publications
             <a href="{{ instance.link_of_library_or_collection }}" target="_blank">
