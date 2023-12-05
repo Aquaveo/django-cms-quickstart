@@ -3,7 +3,6 @@ from django.core.validators import MaxValueValidator, MinValueValidator
 from django.db import models
 from pyzotero import zotero
 from hs_restclient import HydroShare, HydroShareAuthBasic
-import hsclient
 
 
 import datetime
@@ -93,36 +92,40 @@ def create_hydroshare_resources(sender, instance, *args, **kwargs):
     json_resources = {
         'list_resources': []
     }
+    logging.warning(instance.user,instance.password)
     if instance.tags:
         keywords = instance.tags.split(',')
         # logging.warning(keywords)
     if instance.user != '' and instance.password != '':
-        hscli = hsclient.HydroShare(instance.user, instance.password)
+        auth = HydroShareAuthBasic(username=instance.user, password=instance.password)
+        hs = HydroShare(auth=auth)
     else:
-        hscli = hsclient.HydroShare()
+        hs = HydroShare(prompt_auth=False)
 
     try:
-        for resource in hscli.search(subject=keywords):
-            single_resource={}
-            # addtional_metadata_dict = resource.get('metadata','').get('additional_metadata','')
-            addtional_metadata_dict = {}
-            addtional_metadata_dict = extract_urls(resource.abstract)
+        for resource in hs.resources(subject=keywords,types="ToolResource"):
+            logging.warning(resource)
+            science_metadata_json = hs.getScienceMetadata(resource['resource_id'])
+            logging.warning(science_metadata_json)
 
-            # addtional_metadata_dict = hscli.resource(resource.resource_id).metadata.additional_metadata
-            image_url = addtional_metadata_dict.get('image_url', instance.placeholder_image)
+            single_resource={}
+            image_url = science_metadata_json.get('app_icon',instance.placeholder_image).get('value',instance.placeholder_image)
+            web_site_url = science_metadata_json.get('app_home_page_url','').get('value','')
+            github_url = science_metadata_json.get('source_code_url','').get('value','')
+            help_page_url = science_metadata_json.get('help_page_url','').get('value','')
 
             if image_url == '':
                 image_url = instance.placeholder_image
             
             single_resource={
-                'title':resource.resource_title,
-                'abstract': addtional_metadata_dict.get('abstract_text',resource.abstract),
-                'github_url': addtional_metadata_dict.get('github_url',''),
+                'title':resource['resource_title'],
+                'abstract':resource['abstract'],
+                'github_url': github_url,
                 'image': image_url,
-                'web_site_url': addtional_metadata_dict.get('website_url',''),
+                'web_site_url': web_site_url,
+                'documentation_url': help_page_url,
                 'unique_identifier': f'{uuid.uuid4()}'
             }
-            # logging.warning(single_resource)
 
             json_resources['list_resources'].append(single_resource)
         instance.resources = json_resources
@@ -132,21 +135,4 @@ def create_hydroshare_resources(sender, instance, *args, **kwargs):
                 f'The following error: {e}'
             ]
         }
-
-
-def extract_urls(text: str) -> dict:
-    lines = text.split('\n')
-    url_mapping = {}
-    for line in lines:
-        parts = line.split(': ')
-        if len(parts) == 2:
-            key, value = parts
-            url_mapping[key] = value
-    return {
-        'abstract_text': lines[0],  
-        'image_url': url_mapping.get('image_url', ''),
-        'github_url': url_mapping.get('github_url', ''),
-        'website_url': url_mapping.get('website_url', ''),
-        'documentation': url_mapping.get('documentation', '')
-    }
 

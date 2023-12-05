@@ -15,7 +15,7 @@ class HydroShareResourcePlugin(CMSPluginBase):
     cache = False
     # parent_classes = ['HydroShareResourceListPlugin']
     def render(self, context, instance, placeholder):
-        context = super(HydroShareResourcePlugin,self).render(context, instance, placeholder)
+        context = super().render(context, instance, placeholder)
         return context
 
 
@@ -28,8 +28,8 @@ class HydroShareResourceListPlugin(CMSPluginBase):
     cache = False
     # allow_children = True
     def render(self, context, instance, placeholder):
-        instance.updated_version = instance.updated_version + 1
-        instance.save(update_fields=['updated_version'])
+        # instance.updated_version = instance.updated_version + 1
+        # instance.save(update_fields=['updated_version'])
         context = super().render(context, instance, placeholder)
         return context
 

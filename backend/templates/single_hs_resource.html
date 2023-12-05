@@ -4,6 +4,12 @@
 <script type="text/javascript">
 
 
+
+  //<p class="card-text d-inline-block text-truncate my-2 fs-8 lh-1.5 fw-light" style="max-width:300px;">{{ instance.description }}</p>
+  //for the js thing
+  //https://jsfiddle.net/my8jpn01/19/
+  /*
+
   document.addEventListener('DOMContentLoaded', function () {
 
 
@@ -19,10 +25,7 @@
         truncatedElement.classList.remove('truncated');
     });
   });
-  //<p class="card-text d-inline-block text-truncate my-2 fs-8 lh-1.5 fw-light" style="max-width:300px;">{{ instance.description }}</p>
-  //for the js thing
-  //https://jsfiddle.net/my8jpn01/19/
-  /*
+
     <p id="truncate-{{ resource.unique_identifier }}" class="card-text truncate">
                     
     <span id="helpicon-{{ resource.unique_identifier }}" class="helpicon text-decoration-none text-secondary" href="#">
@@ -30,7 +33,36 @@
     </span>
     <span id="span-{{ resource.unique_identifier }}"><i class="bi bi-chevron-compact-up"></i></span>
     </p>
+  https://stackoverflow.com/questions/34833815/showing-truncated-text-on-hover-using-css-ellipsis-overlaps-text-below-it
+    
+    .truncate {
+        position: relative;
+        max-width:90%;
+        width: 80%;
+        white-space: nowrap;
+        overflow: hidden;
+        text-overflow: ellipsis;
+        float: left;
+        word-wrap: break-word;
+        padding-right: 20px;
+    }
+    .truncate.truncated {
+        white-space: initial;
+        width: 100%;
+        text-align: initial;
+    }
+    .truncate.truncated .helpicon{
+        display: none;
+    }
+    
+    .helpicon {
+        right: 0;
+        top:0;
+        position: absolute;
+    }
+  
   */
+
 
 
 
@@ -56,13 +88,13 @@
                 <div style="width:fit-content;">
                 <p class="card-text my-2 fs-6 lh-1.5 fw-light d-flex flex-row justify-content-between w-100 gap-3 "  style="max-width:300px;">
                     {% if resource.github_url %}
-                    <a href="{{ resource.github_url }}" class="text-decoration-none text-secondary" title="github"> <i class="bi bi-github"></i></a>
+                    <a href="{{ resource.github_url }}" target="_blank" class="text-decoration-none text-secondary" title="source_code"> <i class="bi bi-github"></i></a>
                     {% endif %}
                     {% if resource.web_site_url %}
-                    <a href="{{ resource.web_site_url }}" class="text-decoration-none text-secondary" title="web page"> <i class="bi bi-journals"></i></a>
+                    <a href="{{ resource.web_site_url }}" target="_blank" class="text-decoration-none text-secondary" title="web page"> <i class="bi bi-arrow-up-right-square"></i> </a>
                     {% endif %}
                     {% if resource.documentation_url %}
-                    <a href="{{ resource.documentation_url }}" class="text-decoration-none text-secondary" title="documentation"> <i class="bi bi-arrow-up-right-square"></i></a>
+                    <a href="{{ resource.documentation_url }}" target="_blank" class="text-decoration-none text-secondary" title="documentation"> <i class="bi bi-journals"></i> </a>
                     {% endif %}
                 </p>
                 </div>
