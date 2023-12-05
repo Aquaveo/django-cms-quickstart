@@ -208,3 +208,5 @@ whitenoise==5.2.0
 # setuptools
 
 pyzotero
+hs_restclient
+hsclient

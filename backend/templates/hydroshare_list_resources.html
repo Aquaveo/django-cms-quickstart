@@ -1,0 +1,73 @@
+{% load cms_tags sekizai_tags %}
+
+{% addtoblock "css" %}
+<style>
+  :root {
+    --image-width: 200px;
+    --image-height: 200px;
+  }
+  .truncate {
+    position: relative;
+    max-width:90%;
+    width: 80%;
+    /* need automatic multi-line height */
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    float: left;
+    word-wrap: break-word;
+    padding-right: 20px;
+  }
+  .truncate.truncated {
+      white-space: initial;
+      width: 100%;
+      text-align: initial;
+  }
+  .truncate.truncated .helpicon{
+    display: none;
+  }
+  
+  .helpicon {
+    right: 0;
+    top:0;
+    position: absolute;
+  }
+  .img-tile{
+    object-fit: cover;
+  }
+
+  .name{
+    width: 80%;
+
+    text-overflow: ellipsis;
+    margin-bottom: 12px;
+    cursor: pointer;
+    word-break: break-all;
+    overflow:hidden;
+    white-space: nowrap;
+}
+.name:hover{
+    overflow: visible; 
+    white-space: normal;
+    height:auto;  /* just added this line */
+}
+
+
+
+</style>
+{% endaddtoblock %}
+<div>
+
+</div>
+
+
+<div class="container-hydroshare-resource-list-plugin">
+    {% for key, values in instance.resources.items %}
+    <div class="wrapper-publication-set">    
+            {% for resource in values %}
+                {% include "single_hs_resource.html" with resource=resource %}
+            {% endfor %}
+        
+    </div>
+    {% endfor %}
+</div>

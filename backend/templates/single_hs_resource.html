@@ -1,0 +1,85 @@
+{% load cms_tags sekizai_tags %}
+
+{% addtoblock "js" %}
+<script type="text/javascript">
+
+
+  document.addEventListener('DOMContentLoaded', function () {
+
+
+    const helpIcon = document.getElementById('helpicon-{{ resource.unique_identifier }}');
+    const spanElement = document.getElementById('span-{{ resource.unique_identifier }}');
+    const truncatedElement = document.getElementById('truncate-{{ resource.unique_identifier }}');
+
+    helpIcon.addEventListener('click', function () {
+        truncatedElement.classList.add('truncated');
+      });
+  
+    spanElement.addEventListener('click', function () {
+        truncatedElement.classList.remove('truncated');
+    });
+  });
+  //<p class="card-text d-inline-block text-truncate my-2 fs-8 lh-1.5 fw-light" style="max-width:300px;">{{ instance.description }}</p>
+  //for the js thing
+  //https://jsfiddle.net/my8jpn01/19/
+  /*
+    <p id="truncate-{{ resource.unique_identifier }}" class="card-text truncate">
+                    
+    <span id="helpicon-{{ resource.unique_identifier }}" class="helpicon text-decoration-none text-secondary" href="#">
+        <i class="bi bi-chevron-compact-down"></i>
+    </span>
+    <span id="span-{{ resource.unique_identifier }}"><i class="bi bi-chevron-compact-up"></i></span>
+    </p>
+  */
+
+
+
+</script>
+{% endaddtoblock %}
+
+    <div class="card border-light mb-3 w-100 card-height" >
+        <div class="row g-0">
+            <div class="col-md-4 col-lg-4" style="min-width:200px; min-height:200px; width:fit-content; height:200px;">
+            {% if resource.web_site_url  %} 
+                <a href="{{ resource.web_site_url }}">
+                <img src="{{ resource.image }}" class="img-tile img-fluid rounded-start" alt="..."  style="width:200px; height:200px;">
+                </a>
+            {% else %}
+                <a href='javascript:void(0)' class='portfolio-link'>
+                <img src="{{ resource.image }}" class="img-tile img-fluid rounded-start h-100" alt="..." style="width:200px; height:200px;">
+                </a>
+            {% endif %}
+            </div>
+            <div class="col-md-8 col-lg-8">
+            <div class="card-body">
+                <h5 class="card-title card-h5">{{ resource.title }}</h5>
+                <div style="width:fit-content;">
+                <p class="card-text my-2 fs-6 lh-1.5 fw-light d-flex flex-row justify-content-between w-100 gap-3 "  style="max-width:300px;">
+                    {% if resource.github_url %}
+                    <a href="{{ resource.github_url }}" class="text-decoration-none text-secondary" title="github"> <i class="bi bi-github"></i></a>
+                    {% endif %}
+                    {% if resource.web_site_url %}
+                    <a href="{{ resource.web_site_url }}" class="text-decoration-none text-secondary" title="web page"> <i class="bi bi-journals"></i></a>
+                    {% endif %}
+                    {% if resource.documentation_url %}
+                    <a href="{{ resource.documentation_url }}" class="text-decoration-none text-secondary" title="documentation"> <i class="bi bi-arrow-up-right-square"></i></a>
+                    {% endif %}
+                </p>
+                </div>
+                <p class="card-subtitle mb-2 text-muted fst-italic">{{ resource.subtitle }}</p>
+                <div class="d-flex flex-column">
+                <div>
+
+                    <p class="name">
+                        {{ resource.abstract }}
+                    </p>
+
+
+                </div>
+                </div>
+            </div>
+            </div>
+        </div>
+    </div>
+            
+        

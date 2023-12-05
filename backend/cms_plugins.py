@@ -1,8 +1,9 @@
 from cms.plugin_base import CMSPluginBase
 from cms.plugin_pool import plugin_pool
 from django.utils.translation import gettext_lazy as _
-from .models import HydroShareResource,ZoteroBibliographyResource
+from .models import HydroShareResource,HydroShareResourceList,ZoteroBibliographyResource
 import logging
+
 
 logger = logging.getLogger(__name__)
 
@@ -12,8 +13,23 @@ class HydroShareResourcePlugin(CMSPluginBase):
     name = _("HydroShare Resource Plugin")
     render_template = "hydroshare_resource_template.html"
     cache = False
-
+    # parent_classes = ['HydroShareResourceListPlugin']
     def render(self, context, instance, placeholder):
+        context = super(HydroShareResourcePlugin,self).render(context, instance, placeholder)
+        return context
+
+
+@plugin_pool.register_plugin
+class HydroShareResourceListPlugin(CMSPluginBase):
+    model = HydroShareResourceList
+    name = _("HydroShare Resource List Plugin")
+    render_template = "hydroshare_list_resources.html"
+    # child_classes = ['HydroShareResourcePlugin']
+    cache = False
+    # allow_children = True
+    def render(self, context, instance, placeholder):
+        instance.updated_version = instance.updated_version + 1
+        instance.save(update_fields=['updated_version'])
         context = super().render(context, instance, placeholder)
         return context
 

@@ -46,3 +46,5 @@ djangocms-history
 
 pip-tools  # needed for compilation of this file into requirements.txt, see start of file
 pyzotero
+hs_restclient
+hsclient
