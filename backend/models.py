@@ -92,7 +92,7 @@ def create_hydroshare_resources(sender, instance, *args, **kwargs):
     json_resources = {
         'list_resources': []
     }
-    logging.warning(instance.user,instance.password)
+    # logging.warning(instance.user,instance.password)
     if instance.tags:
         keywords = instance.tags.split(',')
         # logging.warning(keywords)
@@ -104,9 +104,9 @@ def create_hydroshare_resources(sender, instance, *args, **kwargs):
 
     try:
         for resource in hs.resources(subject=keywords,types="ToolResource"):
-            logging.warning(resource)
+            # logging.warning(resource)
             science_metadata_json = hs.getScienceMetadata(resource['resource_id'])
-            logging.warning(science_metadata_json)
+            # logging.warning(science_metadata_json)
 
             single_resource={}
             image_url = science_metadata_json.get('app_icon',instance.placeholder_image).get('value',instance.placeholder_image)
