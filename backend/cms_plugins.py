@@ -13,7 +13,6 @@ class HydroShareResourcePlugin(CMSPluginBase):
     name = _("HydroShare Resource Plugin")
     render_template = "hydroshare_resource_template.html"
     cache = False
-    # parent_classes = ['HydroShareResourceListPlugin']
     def render(self, context, instance, placeholder):
         context = super().render(context, instance, placeholder)
         return context
@@ -24,12 +23,10 @@ class HydroShareResourceListPlugin(CMSPluginBase):
     model = HydroShareResourceList
     name = _("HydroShare Resource List Plugin")
     render_template = "hydroshare_list_resources.html"
-    # child_classes = ['HydroShareResourcePlugin']
     cache = False
-    # allow_children = True
     def render(self, context, instance, placeholder):
-        # instance.updated_version = instance.updated_version + 1
-        # instance.save(update_fields=['updated_version'])
+        instance.updated_version = instance.updated_version + 1
+        instance.save(update_fields=['updated_version'])
         context = super().render(context, instance, placeholder)
         return context
 
