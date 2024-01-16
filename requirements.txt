@@ -210,3 +210,4 @@ whitenoise==5.2.0
 pyzotero
 hs_restclient
 hsclient
+bs4

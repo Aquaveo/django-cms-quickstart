@@ -5,6 +5,8 @@ from .models import HydroShareResource,HydroShareResourceList,ZoteroBibliography
 import logging
 from hs_restclient import HydroShare, HydroShareAuthBasic
 import uuid
+import requests
+from bs4 import BeautifulSoup
 
 # from datetime import datetime
 
@@ -142,15 +144,23 @@ def get_most_recent_date(date_local_resource, date_api):
         return False
 
 def update_resource(resource,hs,instance):
-    science_metadata_json = hs.getScienceMetadata(resource['resource_id'])
     # logging.warning(science_metadata_json)
-
     single_resource={}
-    image_url = science_metadata_json.get('app_icon',instance.placeholder_image).get('value',instance.placeholder_image)
-    web_site_url = science_metadata_json.get('app_home_page_url','').get('value','')
-    github_url = science_metadata_json.get('source_code_url','').get('value','')
-    help_page_url = science_metadata_json.get('help_page_url','').get('value','')
 
+    if resource["resource_type"] == 'ToolResource':
+        science_metadata_json = hs.getScienceMetadata(resource['resource_id'])
+
+        image_url = science_metadata_json.get('app_icon',instance.placeholder_image).get('value',instance.placeholder_image)
+        web_site_url = science_metadata_json.get('app_home_page_url','').get('value','')
+        github_url = science_metadata_json.get('source_code_url','').get('value','')
+        help_page_url = science_metadata_json.get('help_page_url','').get('value','')
+    if resource["resource_type"] == 'CompositeResource':
+        resource_scrapping = requests.get(resource['resource_url'])
+        logging.warning(f'{extract_value_by_name(resource_scrapping.content,"home_page_url")}')
+        image_url = instance.placeholder_image if not extract_value_by_name(resource_scrapping.content,"app_icon") else extract_value_by_name(resource_scrapping.content,"app_icon")
+        web_site_url = '' if not extract_value_by_name(resource_scrapping.content,"home_page_url") else extract_value_by_name(resource_scrapping.content,"home_page_url")
+        github_url = '' if not extract_value_by_name(resource_scrapping.content,"source_code_url") else extract_value_by_name(resource_scrapping.content,"source_code_url")
+        help_page_url = '' if not extract_value_by_name(resource_scrapping.content,"help_page_url") else extract_value_by_name(resource_scrapping.content,"help_page_url")
     if image_url == '':
         image_url = instance.placeholder_image
     
@@ -166,3 +176,17 @@ def update_resource(resource,hs,instance):
         'date_last_updated': resource['date_last_updated']
     }
     return single_resource
+
+
+def extract_value_by_name(html, name):
+    soup = BeautifulSoup(html, 'html.parser')
+    rows = soup.select('#extraMetaTable tbody tr')
+
+    for row in rows:
+        name_cell = row.select_one('td:first-child')
+        value_cell = row.select_one('td:nth-child(2)')
+
+        if name_cell and value_cell and name_cell.get_text(strip=True) == name:
+            return value_cell.get_text(strip=True)
+
+    return None

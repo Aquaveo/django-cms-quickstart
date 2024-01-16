@@ -48,3 +48,4 @@ pip-tools  # needed for compilation of this file into requirements.txt, see star
 pyzotero
 hs_restclient
 hsclient
+bs4
