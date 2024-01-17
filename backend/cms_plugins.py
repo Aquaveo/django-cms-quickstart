@@ -78,7 +78,7 @@ def create_hydroshare_resources(instance):
         # logging.warning(resources_model)
 
         for resource_api in resources_api:
-            logging.warning(resource_api['resource_title'])
+            # logging.warning(resource_api['resource_title'])
 
             matching_resource_model = get_dict_with_attribute(resources_model, 'resource_id', resource_api['resource_id'])
             # logging.warning(matching_resource_model)
@@ -88,14 +88,14 @@ def create_hydroshare_resources(instance):
                 is_recent_date = get_most_recent_date(matching_resource_model['date_last_updated'],resource_api['date_last_updated'])
                 # logging.warning(is_recent_date)
                 if is_recent_date : # If the resource retrieved from api is more recent, then update resource
-                    logging.warning("resource has a more recent version")
+                    # logging.warning("resource has a more recent version")
                     single_resource = update_resource(resource_api,hs,instance)
                     # logging.warning(single_resource)
                     json_resources['list_resources'].append(single_resource)
                     instance.resources = json_resources
 
                 else: # resource is the same, then retrive the resource saved locally
-                    logging.warning("resource is the same")
+                    # logging.warning("resource is the same")
 
                     single_resource = matching_resource_model
                     json_resources['list_resources'].append(single_resource)
@@ -103,7 +103,7 @@ def create_hydroshare_resources(instance):
             # If the resource is not here then create one
             else:
                 # logging.warning(resource)
-                logging.warning("resource is new, creating now")
+                # logging.warning("resource is new, creating now")
                 single_resource = update_resource(resource_api,hs,instance)
                 json_resources['list_resources'].append(single_resource)
 
@@ -129,12 +129,12 @@ def get_dict_with_attribute(list_of_dicts, attribute, value):
     return None  # Return None if not found in any dictionary
 
 def get_most_recent_date(date_local_resource, date_api):
-    logging.warning(f'{date_local_resource} , {date_api}')
+    # logging.warning(f'{date_local_resource} , {date_api}')
 
     # Convert strings to datetime objects
     date_time_local_resource = datetime.datetime.fromisoformat(date_local_resource[:-1])
     date_time_api = datetime.datetime.fromisoformat(date_api[:-1])
-    logging.warning(f'{date_time_local_resource} , {date_time_api}')
+    # logging.warning(f'{date_time_local_resource} , {date_time_api}')
     # Compare the datetime objects
     if date_time_local_resource > date_time_api:
         return False
