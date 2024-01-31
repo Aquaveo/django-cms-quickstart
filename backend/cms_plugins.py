@@ -108,6 +108,8 @@ def create_hydroshare_resources(instance):
                 json_resources['list_resources'].append(single_resource)
 
                 instance.resources = json_resources
+        logging.warning(json_resources)
+
         instance.save(update_fields=['resources'])
     except Exception as e:
         instance.resources = {
@@ -149,11 +151,11 @@ def update_resource(resource,hs,instance):
 
     if resource["resource_type"] == 'ToolResource':
         science_metadata_json = hs.getScienceMetadata(resource['resource_id'])
-        logging.warning(f'{science_metadata_json}')
+        # logging.warning(f'{science_metadata_json}')
         image_url = science_metadata_json.get('app_icon',instance.placeholder_image).get('value',instance.placeholder_image)
-        web_site_url = '' if not science_metadata_json.get('app_home_page_url','') else science_metadata_json.get('app_home_page_url','')
-        github_url = '' if not science_metadata_json.get('source_code_url','') else science_metadata_json.get('source_code_url','')
-        help_page_url = '' if not science_metadata_json.get('help_page_url','') else science_metadata_json.get('help_page_url','')
+        web_site_url = '' if not science_metadata_json.get('app_home_page_url','') else science_metadata_json.get('app_home_page_url').get('value','')
+        github_url = '' if not science_metadata_json.get('source_code_url','') else science_metadata_json.get('source_code_url').get('value','')
+        help_page_url = '' if not science_metadata_json.get('help_page_url','') else science_metadata_json.get('help_page_url').get('value','')
     if resource["resource_type"] == 'CompositeResource':
         resource_scrapping = requests.get(resource['resource_url'])
         image_url = instance.placeholder_image if not extract_value_by_name(resource_scrapping.content,"app_icon") else extract_value_by_name(resource_scrapping.content,"app_icon")
