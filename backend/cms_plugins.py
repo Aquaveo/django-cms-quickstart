@@ -148,7 +148,6 @@ def get_most_recent_date(date_local_resource, date_api):
 def update_resource(resource,hs,instance):
     # logging.warning(science_metadata_json)
     single_resource={}
-
     if resource["resource_type"] == 'ToolResource':
         science_metadata_json = hs.getScienceMetadata(resource['resource_id'])
         # logging.warning(f'{science_metadata_json}')
