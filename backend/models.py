@@ -126,6 +126,15 @@ def fetch_hydrolearn_modules(sender, instance, *args, **kwargs):
         courses_url, data=login_data, headers=dict(Referer=courses_url)
     )
     courses_list = courses_response.json()["results"]
+
+    # if organization is specified, then filter the courses
+    if instance.organization:
+        courses_list = list(
+            filter(
+                lambda course: course["data"]["org"] == instance.organization,
+                courses_list,
+            )
+        )
     for course in courses_list:
         course_url = f"{URL}/courses/course-v1:{course['org']}+{course['number']}+{course['run']}"
         course_image_url = f'{URL}/{course["image_url"]}'
