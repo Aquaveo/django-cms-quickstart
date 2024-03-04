@@ -1,0 +1,48 @@
+{% load cms_tags sekizai_tags %}
+
+{% addtoblock "css" %}
+<style>
+  :root {
+    --image-width: 200px;
+    --image-height: 200px;
+  }
+
+  .img-tile{
+    object-fit: cover;
+  }
+
+  .name{
+    width: 80%;
+
+    text-overflow: ellipsis;
+    margin-bottom: 12px;
+    cursor: pointer;
+    word-break: break-all;
+    overflow:hidden;
+    white-space: nowrap;
+}
+.name:hover{
+    overflow: visible; 
+    white-space: normal;
+    height:auto;  /* just added this line */
+}
+
+
+
+</style>
+{% endaddtoblock %}
+<div>
+
+</div>
+
+
+<div class="container-hydrolearn-module-list-plugin">
+    {% for key, values in instance.modules.items %}
+    <div class="wrapper-publication-set">    
+            {% for module in values %}
+                {% include "single_hydrolearn_module.html" with module=module %}
+            {% endfor %}
+        
+    </div>
+    {% endfor %}
+</div>
