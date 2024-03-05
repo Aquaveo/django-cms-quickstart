@@ -4,16 +4,16 @@
 
 {% endaddtoblock %}
 
-    <div class="card border-white mb-3 w-100 card-height" >
+    <div class="hydrolearn_module card border-white mb-3 w-100 card-height" >
         <div class="row g-0">
             <div class="col-12 col-sm-6 col-md-4 col-lg-4 d-flex justify-content-center justify-content-md-end justify-content-lg-end align-items-center align-items-lg-center align-items-md-center" >
-            {% if resource.web_site_url  %} 
+            {% if resource.course_url  %} 
                 <a href="{{ module.course_url }}">
-                <img src="{{ module.image_url }}" class="img-tile img-fluid rounded-start" alt="..."  style="width:200px; height:200px;">
+                <img src="{{ module.course_image_url }}" class="img-tile img-fluid rounded-start" alt="..." >
                 </a>
             {% else %}
                 <a href='javascript:void(0)' class='portfolio-link'>
-                <img src="{{ module.image_url }}" class="img-tile img-fluid rounded-start h-100" alt="..." style="width:200px; height:200px;">
+                <img src="{{ module.course_image_url }}" class="img-tile img-fluid rounded-start h-100" alt="..." >
                 </a>
             {% endif %}
             </div>
@@ -21,19 +21,29 @@
                 <div class="card-body">
                     <div class="d-flex align-items-baseline gap-2 justify-content-center justify-content-lg-start justify-content-md-start">
                         <h5 class="card-title card-h5">{{ module.course_title }}</h5>
-                        <div style="width:fit-content;">
-                            <p class="card-text my-2 fs-6 lh-1.5 fw-light d-flex flex-row justify-content-between w-100 gap-3 bg-light rounded p-1"  style="max-width:300px;">
-                                {% if module.organization %}
-                                <a href="{{ module.course_organization }}" target="_blank" class="text-decoration-none text-secondary" title="source_code"> <i class="bi bi-github"></i></a>
-                                {% endif %}
-                                {% if module.course_code %}
-                                <a href="{{ module.course_code }}" target="_blank" class="text-decoration-none text-secondary" title="web page"> <i class="bi bi-arrow-up-right-square"></i> </a>
-                                {% endif %}
-                            </p>
-                        </div>
                     </div>
 
-                    <p class="card-subtitle mb-2 text-muted fst-italic">{{ module.course_weekly_effort }}</p>
+                        <div class="row g-0">
+                            <div class="col col-md-6 col-lg-6 col-xl-6 text-start">
+                                <p class="card-subtitle mb-2 text-muted" style="font-size:12px;">
+                                    {% if module.course_organization %}
+                                        <span class="text-muted">{{ module.course_organization }}</span>
+                                    {% endif %}
+                                </p>
+                            </div>
+                            <div class="col col-md-6 col-lg-6 col-xl-6 text-end">
+                                <p class="card-subtitle mb-2 text-muted" style="font-size:12px">
+                                    {% if module.course_code %}
+                                        <span class="text-muted">{{ module.course_code }}</span>
+                                    {% endif %}
+                                </p>
+                            </div>
+                        </div>
+
+                        {% if module.course_weekly_effort %}
+                            <p class="card-subtitle mb-2 text-muted fst-italic" style="font-size:12px;">Effort: {{ module.course_weekly_effort }}</p>
+                        {% endif %}
+
                     <div class="d-flex flex-column justify-content-center justify-content-lg-start justify-content-md-start text-center text-lg-start text-md-start">
                         <p class="name w-100">
                             {{ module.course_description_content }}

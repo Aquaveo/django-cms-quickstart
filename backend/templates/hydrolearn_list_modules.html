@@ -20,13 +20,15 @@
     word-break: break-all;
     overflow:hidden;
     white-space: nowrap;
-}
-.name:hover{
-    overflow: visible; 
-    white-space: normal;
-    height:auto;  /* just added this line */
-}
-
+  }
+  .name:hover{
+      overflow: visible; 
+      white-space: normal;
+      height:auto;  /* just added this line */
+  }
+  .hydrolearn_module{
+    box-shadow: 0 1px 10px 0 rgba(0,0,0,0.125), inset 0 0 0 1px rgba(255,255,255,0.75);
+  }
 
 
 </style>
@@ -37,12 +39,9 @@
 
 
 <div class="container-hydrolearn-module-list-plugin">
-    {% for key, values in instance.modules.items %}
-    <div class="wrapper-publication-set">    
-            {% for module in values %}
-                {% include "single_hydrolearn_module.html" with module=module %}
-            {% endfor %}
-        
-    </div>
-    {% endfor %}
+      <div class="wrapper-publication-set">
+      {% for module in instance.modules %}
+          {% include "single_hydrolearn_module.html" with module=module %}
+      {% endfor %}
+      </div>
 </div>

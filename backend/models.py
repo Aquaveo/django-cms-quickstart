@@ -105,52 +105,51 @@ def create_html_citations(sender, instance, *args, **kwargs):
 
 @receiver(post_save, sender=HydroLearnModulesList)
 def fetch_hydrolearn_modules(sender, instance, *args, **kwargs):
-    # general hydrolearn url
-    URL = "https://edx.hydrolearn.org"
-
-    client = requests.session()
-
-    # Retrieve the CSRF token first
-    client.get(URL)  # sets cookie
-    if "csrftoken" in client.cookies:
-        # Django 1.6 and up
-        csrftoken = client.cookies["csrftoken"]
-    else:
-        # older versions
-        csrftoken = client.cookies["csrf"]
-
-    courses_url = "https://edx.hydrolearn.org/search/course_discovery/"
-
-    login_data = dict(csrfmiddlewaretoken=csrftoken)
-    courses_response = client.post(
-        courses_url, data=login_data, headers=dict(Referer=courses_url)
-    )
-    courses_list = courses_response.json()["results"]
-
-    # if organization is specified, then filter the courses
-    if instance.organization:
-        courses_list = list(
-            filter(
-                lambda course: course["data"]["org"] == instance.organization,
-                courses_list,
-            )
+    modules_list = []
+    logger.warning("Fetching HydroLearn modules")
+    try:
+        URL = "https://edx.hydrolearn.org"
+        client = requests.session()
+        client.get(URL)  # sets cookie for CSRF
+        csrftoken = client.cookies.get("csrftoken", "") or client.cookies.get(
+            "csrf", ""
         )
-    for course in courses_list:
-        course_url = f"{URL}/courses/course-v1:{course['org']}+{course['number']}+{course['run']}"
-        course_image_url = f'{URL}/{course["image_url"]}'
-        course_title = course["data"]["title"]["display_name"]
-        course_organization = course["org"]
-        course_code = course["number"]
-        course_weekly_effort = course["data"]["effort"]
-        course_description_content = course["data"]["short_description"]
+        courses_url = f"{URL}/search/course_discovery/"
 
-        course_dict = {
-            "course_title": course_title,
-            "course_url": course_url,
-            "course_image_url": course_image_url,
-            "course_organization": course_organization,
-            "course_code": course_code,
-            "course_weekly_effort": course_weekly_effort,
-            "course_description_content": course_description_content,
-        }
-        instance.modules["list_modules"].append(course_dict)
+        login_data = {"csrfmiddlewaretoken": csrftoken}
+        courses_response = client.post(
+            courses_url, data=login_data, headers={"Referer": courses_url}
+        )
+        courses_list = courses_response.json()["results"]
+
+        if instance.organization:
+
+            def is_from_organization(course):
+                return course["data"]["org"] == instance.organization
+
+            courses_list = filter(is_from_organization, courses_list)
+        for course in courses_list:
+            course_data = course["data"]
+            course_dict = {
+                "course_title": course_data["content"]["display_name"],
+                "course_url": f"{URL}/courses/{course_data.get('course')}/about",
+                "course_image_url": (
+                    f'{URL}{course_data.get("image_url")}'
+                    if course_data.get("image_url", "") != ""
+                    else ""
+                ),
+                "course_organization": course_data.get("org", ""),
+                "course_code": course_data.get("number", ""),
+                "course_weekly_effort": course_data.get("effort", ""),
+                "course_description_content": course_data.get("content").get(
+                    "short_description", ""
+                ),
+            }
+            logger.warning(course_dict)
+
+            modules_list.append(course_dict)
+
+        instance.modules = modules_list
+    except Exception as e:
+        logger.warning(f"Error fetching HydroLearn modules: {e}")
+        instance.modules = modules_list
