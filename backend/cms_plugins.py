@@ -1,7 +1,12 @@
 from cms.plugin_base import CMSPluginBase
 from cms.plugin_pool import plugin_pool
 from django.utils.translation import gettext_lazy as _
-from .models import HydroShareResource,HydroShareResourceList,ZoteroBibliographyResource
+from .models import (
+    HydroShareResource,
+    HydroShareResourceList,
+    ZoteroBibliographyResource,
+    HydroLearnModulesList,
+)
 import logging
 from hs_restclient import HydroShare, HydroShareAuthBasic
 import uuid
@@ -14,12 +19,14 @@ import datetime
 
 logger = logging.getLogger(__name__)
 
+
 @plugin_pool.register_plugin
 class HydroShareResourcePlugin(CMSPluginBase):
     model = HydroShareResource
     name = _("HydroShare Resource Plugin")
     render_template = "hydroshare_resource_template.html"
     cache = False
+
     def render(self, context, instance, placeholder):
         context = super().render(context, instance, placeholder)
         return context
@@ -31,12 +38,28 @@ class HydroShareResourceListPlugin(CMSPluginBase):
     name = _("HydroShare Resource List Plugin")
     render_template = "hydroshare_list_resources.html"
     cache = False
+
     def render(self, context, instance, placeholder):
         create_hydroshare_resources(instance)
         # instance.updated_version = instance.updated_version + 1
         # instance.save(update_fields=['updated_version'])
         context = super().render(context, instance, placeholder)
         return context
+
+
+@plugin_pool.register_plugin
+class HydroLearnPlugin(CMSPluginBase):
+    model = HydroLearnModulesList
+    name = _("HydroLearn Plugin")
+    render_template = "hydrolearn_list_modules.html"
+    cache = False
+
+    def render(self, context, instance, placeholder):
+        instance.updated_version = instance.updated_version + 1
+        instance.save(update_fields=["updated_version"])
+        context = super().render(context, instance, placeholder)
+        return context
+
 
 @plugin_pool.register_plugin
 class ZoteroBibliographyResourcePlugin(CMSPluginBase):
@@ -45,26 +68,24 @@ class ZoteroBibliographyResourcePlugin(CMSPluginBase):
     render_template = "zotero_bibliography.html"
     cache = False
 
-    #This is key in order to call the API every time the page renders
-    #The instance.save calls the pre_save signal which makes the call of the API
+    # This is key in order to call the API every time the page renders
+    # The instance.save calls the pre_save signal which makes the call of the API
     def render(self, context, instance, placeholder):
         instance.updated_version = instance.updated_version + 1
-        instance.save(update_fields=['updated_version'])
+        instance.save(update_fields=["updated_version"])
         context = super().render(context, instance, placeholder)
         return context
-      
+
 
 def create_hydroshare_resources(instance):
     logger.warning(instance.updated_version)
     keywords = []
-    json_resources = {
-        'list_resources': []
-    }
+    json_resources = {"list_resources": []}
     # logging.warning(instance.user,instance.password)
     if instance.tags:
-        keywords = instance.tags.split(',')
+        keywords = instance.tags.split(",")
         # logging.warning(keywords)
-    if instance.user != '' and instance.password != '':
+    if instance.user != "" and instance.password != "":
         auth = HydroShareAuthBasic(username=instance.user, password=instance.password)
         hs = HydroShare(auth=auth)
     else:
@@ -73,62 +94,67 @@ def create_hydroshare_resources(instance):
     try:
         # let's call the resources
         resources_api = hs.resources(subject=keywords)
-        #how about "nwm_portal_app" for "Tool Resources that are part of the apps page, and how about "nwm_portal_data" for Data Resources?
-        resources_model = instance.resources.get('list_resources',[])
+        # how about "nwm_portal_app" for "Tool Resources that are part of the apps page, and how about "nwm_portal_data" for Data Resources?
+        resources_model = instance.resources.get("list_resources", [])
         # logging.warning(resources_model)
 
         for resource_api in resources_api:
             # logging.warning(resource_api['resource_title'])
 
-            matching_resource_model = get_dict_with_attribute(resources_model, 'resource_id', resource_api['resource_id'])
+            matching_resource_model = get_dict_with_attribute(
+                resources_model, "resource_id", resource_api["resource_id"]
+            )
             # logging.warning(matching_resource_model)
-            
+
             # If resource found locally, then check last update date
             if matching_resource_model:
-                is_recent_date = get_most_recent_date(matching_resource_model['date_last_updated'],resource_api['date_last_updated'])
+                is_recent_date = get_most_recent_date(
+                    matching_resource_model["date_last_updated"],
+                    resource_api["date_last_updated"],
+                )
                 # logging.warning(is_recent_date)
-                if is_recent_date : # If the resource retrieved from api is more recent, then update resource
+                if (
+                    is_recent_date
+                ):  # If the resource retrieved from api is more recent, then update resource
                     # logging.warning("resource has a more recent version")
-                    single_resource = update_resource(resource_api,hs,instance)
+                    single_resource = update_resource(resource_api, hs, instance)
                     # logging.warning(single_resource)
-                    json_resources['list_resources'].append(single_resource)
+                    json_resources["list_resources"].append(single_resource)
                     instance.resources = json_resources
 
-                else: # resource is the same, then retrive the resource saved locally
+                else:  # resource is the same, then retrive the resource saved locally
                     # logging.warning("resource is the same")
 
                     single_resource = matching_resource_model
-                    json_resources['list_resources'].append(single_resource)
+                    json_resources["list_resources"].append(single_resource)
                     instance.resources = json_resources
             # If the resource is not here then create one
             else:
                 # logging.warning(resource)
                 # logging.warning("resource is new, creating now")
-                single_resource = update_resource(resource_api,hs,instance)
-                json_resources['list_resources'].append(single_resource)
+                single_resource = update_resource(resource_api, hs, instance)
+                json_resources["list_resources"].append(single_resource)
 
                 instance.resources = json_resources
         logging.warning(json_resources)
 
-        instance.save(update_fields=['resources'])
+        instance.save(update_fields=["resources"])
     except Exception as e:
-        instance.resources = {
-            "Error":[
-                f'The following error: {e}'
-            ]
-        }
+        instance.resources = {"Error": [f"The following error: {e}"]}
+
 
 def get_dict_with_attribute(list_of_dicts, attribute, value):
     # Loop through each dictionary in the list
     for dictionary in list_of_dicts:
         # logging.warning(dictionary)
         # if attribute in dictionary:
-            # logging.warning(dictionary[attribute])
+        # logging.warning(dictionary[attribute])
         # Check if the attribute exists in the dictionary and has the specified value
         if attribute in dictionary and dictionary[attribute] == value:
             return dictionary  # Return the dictionary if found
 
     return None  # Return None if not found in any dictionary
+
 
 def get_most_recent_date(date_local_resource, date_api):
     # logging.warning(f'{date_local_resource} , {date_api}')
@@ -145,46 +171,77 @@ def get_most_recent_date(date_local_resource, date_api):
     else:
         return False
 
-def update_resource(resource,hs,instance):
+
+def update_resource(resource, hs, instance):
     # logging.warning(science_metadata_json)
-    single_resource={}
-    if resource["resource_type"] == 'ToolResource':
-        science_metadata_json = hs.getScienceMetadata(resource['resource_id'])
+    single_resource = {}
+    if resource["resource_type"] == "ToolResource":
+        science_metadata_json = hs.getScienceMetadata(resource["resource_id"])
         # logging.warning(f'{science_metadata_json}')
-        image_url = science_metadata_json.get('app_icon',instance.placeholder_image).get('value',instance.placeholder_image)
-        web_site_url = '' if not science_metadata_json.get('app_home_page_url','') else science_metadata_json.get('app_home_page_url').get('value','')
-        github_url = '' if not science_metadata_json.get('source_code_url','') else science_metadata_json.get('source_code_url').get('value','')
-        help_page_url = '' if not science_metadata_json.get('help_page_url','') else science_metadata_json.get('help_page_url').get('value','')
-    if resource["resource_type"] == 'CompositeResource':
-        resource_scrapping = requests.get(resource['resource_url'])
-        image_url = instance.placeholder_image if not extract_value_by_name(resource_scrapping.content,"app_icon") else extract_value_by_name(resource_scrapping.content,"app_icon")
-        web_site_url = '' if not extract_value_by_name(resource_scrapping.content,"home_page_url") else extract_value_by_name(resource_scrapping.content,"home_page_url")
-        github_url = '' if not extract_value_by_name(resource_scrapping.content,"source_code_url") else extract_value_by_name(resource_scrapping.content,"source_code_url")
-        help_page_url = '' if not extract_value_by_name(resource_scrapping.content,"help_page_url") else extract_value_by_name(resource_scrapping.content,"help_page_url")
-    if image_url == '':
+        image_url = science_metadata_json.get(
+            "app_icon", instance.placeholder_image
+        ).get("value", instance.placeholder_image)
+        web_site_url = (
+            ""
+            if not science_metadata_json.get("app_home_page_url", "")
+            else science_metadata_json.get("app_home_page_url").get("value", "")
+        )
+        github_url = (
+            ""
+            if not science_metadata_json.get("source_code_url", "")
+            else science_metadata_json.get("source_code_url").get("value", "")
+        )
+        help_page_url = (
+            ""
+            if not science_metadata_json.get("help_page_url", "")
+            else science_metadata_json.get("help_page_url").get("value", "")
+        )
+    if resource["resource_type"] == "CompositeResource":
+        resource_scrapping = requests.get(resource["resource_url"])
+        image_url = (
+            instance.placeholder_image
+            if not extract_value_by_name(resource_scrapping.content, "app_icon")
+            else extract_value_by_name(resource_scrapping.content, "app_icon")
+        )
+        web_site_url = (
+            ""
+            if not extract_value_by_name(resource_scrapping.content, "home_page_url")
+            else extract_value_by_name(resource_scrapping.content, "home_page_url")
+        )
+        github_url = (
+            ""
+            if not extract_value_by_name(resource_scrapping.content, "source_code_url")
+            else extract_value_by_name(resource_scrapping.content, "source_code_url")
+        )
+        help_page_url = (
+            ""
+            if not extract_value_by_name(resource_scrapping.content, "help_page_url")
+            else extract_value_by_name(resource_scrapping.content, "help_page_url")
+        )
+    if image_url == "":
         image_url = instance.placeholder_image
-    
-    single_resource={
-        'title':resource['resource_title'],
-        'abstract':resource['abstract'],
-        'github_url': github_url,
-        'image': image_url,
-        'web_site_url': web_site_url,
-        'documentation_url': help_page_url,
-        'unique_identifier': f'{uuid.uuid4()}',
-        'resource_id':resource['resource_id'],
-        'date_last_updated': resource['date_last_updated']
+
+    single_resource = {
+        "title": resource["resource_title"],
+        "abstract": resource["abstract"],
+        "github_url": github_url,
+        "image": image_url,
+        "web_site_url": web_site_url,
+        "documentation_url": help_page_url,
+        "unique_identifier": f"{uuid.uuid4()}",
+        "resource_id": resource["resource_id"],
+        "date_last_updated": resource["date_last_updated"],
     }
     return single_resource
 
 
 def extract_value_by_name(html, name):
-    soup = BeautifulSoup(html, 'html.parser')
-    rows = soup.select('#extraMetaTable tbody tr')
+    soup = BeautifulSoup(html, "html.parser")
+    rows = soup.select("#extraMetaTable tbody tr")
 
     for row in rows:
-        name_cell = row.select_one('td:first-child')
-        value_cell = row.select_one('td:nth-child(2)')
+        name_cell = row.select_one("td:first-child")
+        value_cell = row.select_one("td:nth-child(2)")
 
         if name_cell and value_cell and name_cell.get_text(strip=True) == name:
             return value_cell.get_text(strip=True)
