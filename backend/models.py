@@ -106,7 +106,6 @@ def create_html_citations(sender, instance, *args, **kwargs):
 @receiver(post_save, sender=HydroLearnModulesList)
 def fetch_hydrolearn_modules(sender, instance, *args, **kwargs):
     modules_list = []
-    logger.warning("Fetching HydroLearn modules")
     try:
         URL = "https://edx.hydrolearn.org"
         client = requests.session()
