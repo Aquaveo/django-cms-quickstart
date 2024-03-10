@@ -8,10 +8,11 @@
 {% endaddtoblock %}
 {% addtoblock "css" %}
 <style>
+    
     @import url('https://fonts.googleapis.com/css?family=Open+Sans&display=swap');
-    .container-zotero-plugin{
-        font-family: 'Open Sans', sans-serif !important;
-    }
+    @import url('https://fonts.googleapis.com/css?family=Raleway:300,400,700&display=swap');
+    @import url('https://fonts.googleapis.com/css?family=Roboto:300,400,700&display=swap');
+
     .csl-entry {
         word-wrap: break-word;
         margin: 0 !important;
@@ -29,73 +30,14 @@
     .wrapper-publication-set{
         color: #1c1e21;
         font-size: 16px;
-        font-weight: 300;
-        letter-spacing: 5px;
     }
     .year-style{
         padding-top: 1rem;
-    }
-    .svg-icon {
-        width: 1em;
-        height: 1em;
-      }
-      
-      .svg-icon path,
-      .svg-icon polygon,
-      .svg-icon rect {
-        fill: #4691f6;
-      }
-      
-      .svg-icon circle {
-        stroke: #4691f6;
-        stroke-width: 1;
-      }
-
-
-    .title-tooltip {
-        position: relative;
-        display: inline-block;
-        cursor: pointer;
-    }
-
-    .title-tooltip .tooltiptext {
-        visibility: hidden;
-        width: 120px;
-        background-color: #333;
-        color: #fff;
-        text-align: center;
-        border-radius: 5px;
-        padding: 5px;
-        position: absolute;
-        z-index: 1;
-        top: 50%;
-        left: 100%;
-        margin-top: -20px; /* Half of the tooltip height */
-        margin-left: 5px;
-        opacity: 0;
-        transition: opacity 0.3s;
-        font-size: small;
-    }
-
-    .title-tooltip:hover .tooltiptext {
-        visibility: visible;
-        opacity: 1;
     }
 
 </style>
 {% endaddtoblock %}
 <div class="container-zotero-plugin">
-    <div>
-        <h1 class="title-tooltip">Publications
-            <a href="{{ instance.link_of_library_or_collection }}" target="_blank">
-                <svg class="svg-icon" viewBox="0 0 20 20">
-                    <path d="M14.68,12.621c-0.9,0-1.702,0.43-2.216,1.09l-4.549-2.637c0.284-0.691,0.284-1.457,0-2.146l4.549-2.638c0.514,0.661,1.315,1.09,2.216,1.09c1.549,0,2.809-1.26,2.809-2.808c0-1.548-1.26-2.809-2.809-2.809c-1.548,0-2.808,1.26-2.808,2.809c0,0.38,0.076,0.741,0.214,1.073l-4.55,2.638c-0.515-0.661-1.316-1.09-2.217-1.09c-1.548,0-2.808,1.26-2.808,2.809s1.26,2.808,2.808,2.808c0.9,0,1.702-0.43,2.217-1.09l4.55,2.637c-0.138,0.332-0.214,0.693-0.214,1.074c0,1.549,1.26,2.809,2.808,2.809c1.549,0,2.809-1.26,2.809-2.809S16.229,12.621,14.68,12.621M14.68,2.512c1.136,0,2.06,0.923,2.06,2.06S15.815,6.63,14.68,6.63s-2.059-0.923-2.059-2.059S13.544,2.512,14.68,2.512M5.319,12.061c-1.136,0-2.06-0.924-2.06-2.06s0.923-2.059,2.06-2.059c1.135,0,2.06,0.923,2.06,2.059S6.454,12.061,5.319,12.061M14.68,17.488c-1.136,0-2.059-0.922-2.059-2.059s0.923-2.061,2.059-2.061s2.06,0.924,2.06,2.061S15.815,17.488,14.68,17.488"></path>
-                </svg>
-            </a>
-
-            <span class="tooltiptext">Go to the Publication's Zotero Library</span>
-        </h1>
-    </div>
     {% for key, values in instance.html.items %}
     <div class="wrapper-publication-set">
         <h2 class="year-style">{{ key }}</h2>
@@ -103,7 +45,6 @@
             {% for citation in values %}
             
                 {{ citation | safe }}
-
             
             {% endfor %}
         
