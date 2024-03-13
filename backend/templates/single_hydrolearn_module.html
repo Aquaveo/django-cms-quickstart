@@ -8,14 +8,14 @@
         <div class="row g-0">
             <div class="col-12 col-sm-6 col-md-4 col-lg-4 d-flex justify-content-center justify-content-md-end justify-content-lg-end align-items-center align-items-lg-center align-items-md-center" >
 
-            {% if resource.course_url  %} 
+            {% if module.course_url  %} 
                 <header class="course-image">
                     <div class="cover-image">
                         <a href="{{ module.course_url }}">
                             <img src="{{ module.course_image_url }}" class="img-tile img-fluid rounded-start" alt="..." >
                         </a> 
                     <div class="learn-more" aria-hidden="true">
-                        <a href="{{ module.course_url }}">LEARN MORE</a>
+                        <a href="{{ module.course_url }}">OPEN MODULE</a>
                     </div>
                     
                     </div>
@@ -27,7 +27,7 @@
                             <img src="{{ module.course_image_url }}" class="img-tile img-fluid rounded-start h-100" alt="..." >
                         </a>
                         <div class="learn-more" aria-hidden="true">
-                            <a href="https://edx.hydrolearn.org/courses">LEARN MORE</a>
+                            <a href="https://edx.hydrolearn.org/courses">OPEN MODULE</a>
                         </div>
                         
                     </div>
