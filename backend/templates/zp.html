@@ -1,0 +1,24 @@
+{% extends "zotero_bibliography.html" %}
+
+
+
+
+{% block content %}
+
+    <div class="container-zotero-plugin">
+        {% for key, values in instance.html.items %}
+        <div class="wrapper-publication-set">
+            <h2 class="year-style">{{ key }}</h2>
+            
+                {% for citation in values %}
+                
+                    {{ citation | safe }}
+                
+                {% endfor %}
+            
+        </div>
+        {% endfor %}
+    </div>
+
+{% endblock %}
+

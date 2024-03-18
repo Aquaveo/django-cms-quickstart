@@ -1,12 +1,31 @@
-{% load sekizai_tags %}
-{% load cms_tags %}
+<!-- {% extends CMS_TEMPLATE %} -->
+ 
+{% load cms_tags sekizai_tags %}
+
 
 {% addtoblock "js" %}
-    <script defer>
-        console.log("hey")
-        
+<script>
+  console.log("hey")
+    function fetchPublications() {
+  // Assuming your Django server is running on localhost:8000
+  // Update the URL if your setup is different or if you are using a production server
+  fetch("/publications-api/")
+    .then(response => {
+      if (!response.ok) {
+        throw new Error('Network response was not ok');
+      }
+      return response.json(); // Assuming the response is JSON
+    })
+    .then(data => {
+      console.log(data); // Do something with the data
+      // For example, you could iterate over the data and append it to an element in your HTML
+    })
+    .catch(error => {
+      console.error('There was a problem with the fetch operation:', error);
+    });
+}
 
-    </script>
+</script>
 
 {% endaddtoblock %}
 
@@ -48,20 +67,6 @@
     
 
 {% endblock %}
-<!-- <div class="container-zotero-plugin">
-    {% for key, values in instance.html.items %}
-    <div class="wrapper-publication-set">
-        <h2 class="year-style">{{ key }}</h2>
-        
-            {% for citation in values %}
-            
-                {{ citation | safe }}
-            
-            {% endfor %}
-        
-    </div>
-    {% endfor %}
-</div> -->
 
 
 

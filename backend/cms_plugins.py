@@ -7,15 +7,17 @@ from .models import (
     ZoteroBibliographyResource,
     HydroLearnModulesList,
 )
-import logging
 from hs_restclient import HydroShare, HydroShareAuthBasic
 import uuid
 import requests
 from bs4 import BeautifulSoup
+from pyzotero import zotero
 
 # from datetime import datetime
 
 import datetime
+
+import logging
 
 logger = logging.getLogger(__name__)
 
@@ -65,16 +67,58 @@ class HydroLearnPlugin(CMSPluginBase):
 class ZoteroBibliographyResourcePlugin(CMSPluginBase):
     model = ZoteroBibliographyResource
     name = _("Zotero Citation Resource Plugin")
-    render_template = "zotero_bibliography.html"
+    render_template = "zp.html"
     cache = False
 
     # This is key in order to call the API every time the page renders
     # The instance.save calls the pre_save signal which makes the call of the API
     def render(self, context, instance, placeholder):
+        logging.warning("rendering")
+
         instance.updated_version = instance.updated_version + 1
         instance.save(update_fields=["updated_version"])
         context = super().render(context, instance, placeholder)
+        logging.warning("finish rendering")
+
         return context
+
+
+def create_html_citations(instance):
+    logger.warning("creating_html_citations ")
+    params = {
+        "include": "bib,data",
+        "style": "apa",
+        "sort": "date",
+        "direction": "desc",
+        "linkwrap": 1,
+    }
+    try:
+        zot = zotero.Zotero(
+            instance.library_id, instance.library_type, instance.api_key
+        )
+        if instance.collection_id:
+            items = zot.collection_items(instance.collection_id, **params)
+        else:
+            items = zot.items(**params)
+        # Initialize a dictionary to store publications by year
+        publications_by_year = {}
+
+        # Iterate through the data and populate the dictionary
+        for item in items:
+            # Extract the year from "parsedDate" (if available)
+            parsed_date = item.get("meta", {}).get("parsedDate", "")
+            year = parsed_date.split("-")[0] if parsed_date else "More Publications"
+
+            # Add the publication to the corresponding year's list
+            if year not in publications_by_year:
+                publications_by_year[year] = []
+            publications_by_year[year].append(item["bib"])
+
+        instance.html = publications_by_year
+        instance.save(update_fields=["html"])
+
+    except Exception as e:
+        instance.html = {"Error": [f"The following error: {e}"]}
 
 
 def create_hydroshare_resources(instance):

@@ -6,6 +6,7 @@ from hs_restclient import HydroShare, HydroShareAuthBasic
 import requests
 
 # from datetime import datetime
+import time
 
 import datetime
 import uuid
@@ -65,10 +66,12 @@ class ZoteroBibliographyResource(CMSPlugin):
     unique_identifier = models.UUIDField(default=uuid.uuid4, editable=False)
     updated_version = models.IntegerField(default=0, editable=False)
     link_of_library_or_collection = models.CharField(max_length=400, default="")
+    is_saving = models.BooleanField(default=False, editable=False)
 
 
-@receiver(pre_save, sender=ZoteroBibliographyResource)
+# @receiver(post_save, sender=ZoteroBibliographyResource)
 def create_html_citations(sender, instance, *args, **kwargs):
+    logger.warning("creating_html_citations ")
     params = {
         "include": "bib,data",
         "style": "apa",
@@ -77,6 +80,8 @@ def create_html_citations(sender, instance, *args, **kwargs):
         "linkwrap": 1,
     }
     try:
+        time.sleep(5)
+
         zot = zotero.Zotero(
             instance.library_id, instance.library_type, instance.api_key
         )

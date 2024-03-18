@@ -78,7 +78,8 @@ INSTALLED_APPS = [
     "djangocms_frontend.contrib.media",
     "djangocms_frontend.contrib.image",
     "djangocms_frontend.contrib.tabs",
-    "djangocms_frontend.contrib.utilities"
+    "djangocms_frontend.contrib.utilities",
+    "publications",
 ]
 
 MIDDLEWARE = [
@@ -95,6 +96,7 @@ MIDDLEWARE = [
     "cms.middleware.page.CurrentPageMiddleware",
     "cms.middleware.toolbar.ToolbarMiddleware",
     "cms.middleware.language.LanguageCookieMiddleware",
+    "cms.middleware.utils.ApphookReloadMiddleware",
 ]
 
 ROOT_URLCONF = "backend.urls"
@@ -318,3 +320,5 @@ CKEDITOR_SETTINGS = {
         },
     ]
 }
+
+CMS_COLOR_SCHEME_TOGGLE = True

@@ -1,0 +1,135 @@
+{% load sekizai_tags %}
+{% load cms_tags %}
+<head>
+    <!-- Other head elements -->
+
+    {% csrf_token %}
+    <meta name="csrf-token" content="{{ csrf_token }}">
+</head>
+
+{% addtoblock "js" %}
+    <script defer>
+        
+        function getCSRFToken() {
+            // Attempt to retrieve the CSRF token from the meta tag
+            const token = document.querySelector('meta[name="csrf-token"]').getAttribute('content');
+            return token;
+        }        
+        const url = '/publications/publications-api/';
+
+        // Define the data you want to send. Example data shown here:
+        const requestData = {
+            api_key: "{{ instance.api_key | safe }}",
+            library_id: "{{ instance.library_id | safe }}",
+            library_type: "{{ instance.library_type | safe }}",
+            collection_id: "{{ instance.collection_id | safe }}",
+        };
+    
+        function fetchPublications() {
+            // Assuming your Django server is running on localhost:8000
+            // Update the URL if your setup is different or if you are using a production server
+            fetch(url, {
+                method: 'POST', // or 'GET' if you're sending data in query params
+                headers: {
+                    'Content-Type': 'application/json',
+                    'X-CSRFToken': getCSRFToken(), // Include the CSRF token in the request headers
+                },
+                body: JSON.stringify(requestData),
+            })
+              .then(response => {
+                document.getElementById('spinner').classList.add('hidden'); // Hide spinner
+                document.getElementById('publications-html').classList.remove('hidden'); // Show content
+
+
+                if (!response.ok) {
+                  throw new Error('Network response was not ok');
+                }
+                return response.json(); // Assuming the response is JSON
+              })
+              .then(data => {
+                console.log(data); // Do something with the data
+                let publicationsHTML = ``
+                for (const [key, value] of Object.entries(data)) {
+                    console.log(key, value);
+                    //add the year title 
+                    publicationsHTML += `<h2 class="year-style">${key}</h2>`
+                    //add the publications
+                    value.forEach((publication) => {
+                        publicationsHTML += publication
+                    })
+                }
+                document.getElementById('publications-html').innerHTML = publicationsHTML;
+
+                // For example, you could iterate over the data and append it to an element in your HTML
+              })
+              .catch(error => {
+                console.error('There was a problem with the fetch operation:', error);
+              });
+          }        
+        fetchPublications()
+    </script>
+
+{% endaddtoblock %}
+
+{% addtoblock "css" %}
+<style>
+    
+    @import url('https://fonts.googleapis.com/css?family=Open+Sans&display=swap');
+    @import url('https://fonts.googleapis.com/css?family=Raleway:300,400,700&display=swap');
+    @import url('https://fonts.googleapis.com/css?family=Roboto:300,400,700&display=swap');
+    .container-zotero-plugin{
+        display: none;
+    }
+    .csl-entry {
+        word-wrap: break-word;
+        margin: 0 !important;
+    }
+    .csl-entry,
+    .csl-entry * {
+        box-sizing: content-box;
+    }
+    .csl-bib-body{
+        line-height: 2; 
+        padding-left: 1em; 
+        text-indent:-1.5em !important;
+        padding-bottom:0.5em;
+    }
+    .wrapper-publication-set{
+        color: #1c1e21;
+        font-size: 16px;
+    }
+    .year-style{
+        padding-top: 1rem;
+    }
+
+    .hidden {
+        display: none;
+    }
+    .spinner {
+        border: 4px solid rgba(0, 0, 0, .1);
+        width: 40px;
+        height: 40px;
+        border-radius: 50%;
+        border-left-color: #09f;
+        animation: spin 1s ease infinite;
+    }
+    @keyframes spin {
+        0% {
+            transform: rotate(0deg);
+        }
+        100% {
+            transform: rotate(360deg);
+        }
+    }
+
+</style>
+{% endaddtoblock %}
+
+{% block content %}
+ <div id="spinner" class="spinner"></div>
+
+ <div id="publications-html" class="wrapper-publication-set hidden">  </div>
+{% endblock %}
+
+
+

@@ -6,6 +6,7 @@ import os
 
 urlpatterns = [
     path("admin/", admin.site.urls),
+    path("publications/", include("publications.urls")),
 ]
 
 # if settings.DEBUG:
