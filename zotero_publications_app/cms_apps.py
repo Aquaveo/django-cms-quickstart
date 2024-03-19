@@ -3,9 +3,9 @@ from cms.apphook_pool import apphook_pool
 
 
 @apphook_pool.register  # register the application
-class PublicationsApphook(CMSApp):
-    app_name = "publications"
+class ZoteroPublicationsAppApphook(CMSApp):
+    app_name = "zotero_publications_app"
     name = "Zotero Publications Application"
 
     def get_urls(self, page=None, language=None, **kwargs):
-        return ["publications.urls"]
+        return ["zotero_publications_app.urls"]

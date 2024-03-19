@@ -13,7 +13,7 @@ logger = logging.getLogger(__name__)
 class ZoteroPlugin(CMSPluginBase):
     model = ZoteroPublications
     name = _("Zotero Publications Plugin")
-    render_template = "publications/publications.html"
+    render_template = "zotero-publications.html"
     cache = False
 
     # This is key in order to call the API every time the page renders

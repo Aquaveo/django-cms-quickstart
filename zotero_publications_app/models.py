@@ -1,16 +1,5 @@
 from cms.models.pluginmodel import CMSPlugin
-from django.core.validators import MaxValueValidator, MinValueValidator
 from django.db import models
-from pyzotero import zotero
-from hs_restclient import HydroShare, HydroShareAuthBasic
-import requests
-
-# from datetime import datetime
-import time
-
-import datetime
-import uuid
-from django.db.models.signals import pre_save, post_save
 from django.dispatch import receiver
 import logging
 

@@ -1,7 +1,6 @@
 from django.shortcuts import render
 from django.http import JsonResponse
 from pyzotero import zotero
-from .models import ZoteroPublications
 import logging
 import json
 
@@ -9,10 +8,9 @@ logger = logging.getLogger(__name__)
 
 
 def base_view(request):
-    # This dictionary can pass variables to the template.
-    logging.warning("base_view")
+
     context = {}
-    return render(request, "publications/base.html", context)
+    return render(request, "zotero-publications-base.html", context)
 
 
 def publications_view(request):

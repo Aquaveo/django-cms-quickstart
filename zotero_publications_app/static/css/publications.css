@@ -1,0 +1,61 @@
+
+/* https://cloudcannon.com/blog/how-the-facebook-content-placeholder-works/ */
+/* https://codepen.io/nurulishlah/pen/beEGVE */
+@import url('https://fonts.googleapis.com/css?family=Open+Sans&display=swap');
+@import url('https://fonts.googleapis.com/css?family=Raleway:300,400,700&display=swap');
+@import url('https://fonts.googleapis.com/css?family=Roboto:300,400,700&display=swap');
+
+
+.csl-entry {
+    word-wrap: break-word;
+    margin: 0 !important;
+}
+.csl-entry,
+.csl-entry * {
+    box-sizing: content-box;
+}
+.csl-bib-body{
+    line-height: 2; 
+    padding-left: 1em; 
+    text-indent:-1.5em !important;
+    padding-bottom:0.5em;
+}
+.wrapper-publication-set{
+    color: #1c1e21;
+    font-size: 16px;
+}
+.year-style{
+    padding-top: 1rem;
+}
+
+.hidden {
+    display: none;
+}
+
+
+@keyframes placeHolderShimmer{
+    0%{
+        background-position: -468px 0
+    }
+    100%{
+        background-position: 468px 0
+    }
+}
+
+.animated-background {
+    animation-duration: 1.25s;
+    animation-fill-mode: forwards;
+    animation-iteration-count: infinite;
+    animation-name: placeHolderShimmer;
+    animation-timing-function: linear;
+}
+.year-loading-background{
+    background: #cbcbcb;
+    background: linear-gradient(to right, #cbcbcb 8%, #bbbbbb 18%, #cbcbcb 33%);
+}
+.publication-background{
+    background: linear-gradient(to right, #eeeeee 8%, #dddddd 18%, #eeeeee 33%);
+}
+#placeholder-publications{
+    margin-top: 20px ;
+}

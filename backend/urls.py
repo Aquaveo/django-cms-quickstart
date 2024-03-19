@@ -6,7 +6,7 @@ import os
 
 urlpatterns = [
     path("admin/", admin.site.urls),
-    path("publications/", include("publications.urls")),
+    path("zotero_publications_app/", include("zotero_publications_app.urls")),
 ]
 
 # if settings.DEBUG:

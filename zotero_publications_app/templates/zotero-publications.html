@@ -1,0 +1,31 @@
+
+{% load sekizai_tags static cms_tags %}
+<head>
+    {% csrf_token %}
+    <meta name="csrf-token" content="{{ csrf_token }}">
+</head>
+
+{% addtoblock "js" %}
+    <script>
+        // Define the data you want to send. Example data shown here:
+        const requestData = {
+            api_key: "{{ instance.api_key | safe }}",
+            library_id: "{{ instance.library_id | safe }}",
+            library_type: "{{ instance.library_type | safe }}",
+            collection_id: "{{ instance.collection_id | safe }}",
+        };
+        const url = "{% url 'zotero-publications-api' %}";
+    </script>
+    <script defer src="{% static "js/publications.js" %}"></script>
+{% endaddtoblock %}
+
+{% addtoblock "css" %}
+    <link href="{% static "css/publications.css" %}" rel="stylesheet" />
+
+{% endaddtoblock %}
+
+{% block content %}
+    <div id="placeholder-publications"></div>
+    <div id="publications-html" class="wrapper-publication-set hidden">
+</div>
+{% endblock %}

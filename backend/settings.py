@@ -79,7 +79,7 @@ INSTALLED_APPS = [
     "djangocms_frontend.contrib.image",
     "djangocms_frontend.contrib.tabs",
     "djangocms_frontend.contrib.utilities",
-    "publications",
+    "zotero_publications_app",
 ]
 
 MIDDLEWARE = [
