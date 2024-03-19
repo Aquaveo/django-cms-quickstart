@@ -7,6 +7,7 @@ import os
 urlpatterns = [
     path("admin/", admin.site.urls),
     path("zotero_publications_app/", include("zotero_publications_app.urls")),
+    path("hydrolearn_modules_app/", include("hydrolearn_modules_app.urls")),
 ]
 
 # if settings.DEBUG:

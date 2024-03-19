@@ -1,0 +1,74 @@
+{% load cms_tags sekizai_tags %}
+
+{% addtoblock "js" %}
+
+{% endaddtoblock %}
+
+    <div class="hydrolearn_module card mb-3 w-100 card-height" >
+        <div class="row g-0">
+            <div class="col-12 col-sm-6 col-md-4 col-lg-4 d-flex justify-content-center justify-content-md-end justify-content-lg-end align-items-center align-items-lg-center align-items-md-center" >
+
+            {% if module.course_url  %} 
+                <header class="course-image">
+                    <div class="cover-image">
+                        <a href="{{ module.course_url }}">
+                            <img src="{{ module.course_image_url }}" class="img-tile img-fluid rounded-start" alt="..." >
+                        </a> 
+                    <div class="learn-more" aria-hidden="true">
+                        <a href="{{ module.course_url }}">OPEN MODULE</a>
+                    </div>
+                    
+                    </div>
+                </header>
+            {% else %}
+                <header class="course-image">
+                    <div class="cover-image">
+                        <a href='javascript:void(0)' class='portfolio-link'>
+                            <img src="{{ module.course_image_url }}" class="img-tile img-fluid rounded-start h-100" alt="..." >
+                        </a>
+                        <div class="learn-more" aria-hidden="true">
+                            <a href="https://edx.hydrolearn.org/courses">OPEN MODULE</a>
+                        </div>
+                        
+                    </div>
+                </header>
+
+            {% endif %}
+            </div>
+            <div class="col-12 col-sm-6 col-md-8 col-lg-8 border-light ">
+                <div class="card-body">
+                    <div class="d-flex align-items-baseline gap-2 justify-content-center justify-content-lg-start justify-content-md-start">
+                        <h5 class="card-title card-h5">{{ module.course_title }}</h5>
+                    </div>
+                        <div class="row g-0">
+                            <div class="col col-md-6 col-lg-6 col-xl-6 text-start">
+                                <p class="card-subtitle mb-2 text-muted" style="font-size:12px;">
+                                    {% if module.course_organization %}
+                                        <span class="text-muted">{{ module.course_organization }}</span>
+                                    {% endif %}
+                                </p>
+                            </div>
+                            <div class="col col-md-6 col-lg-6 col-xl-6 text-end">
+                                <p class="card-subtitle mb-2 text-muted" style="font-size:12px">
+                                    {% if module.course_code %}
+                                        <span class="text-muted">{{ module.course_code }}</span>
+                                    {% endif %}
+                                </p>
+                            </div>
+                        </div>
+
+                        {% if module.course_weekly_effort %}
+                            <p class="card-subtitle mb-2 text-muted fst-italic" style="font-size:12px;">Effort: {{ module.course_weekly_effort }}</p>
+                        {% endif %}
+
+                    <div class="d-flex flex-column justify-content-center justify-content-lg-start justify-content-md-start text-center text-lg-start text-md-start">
+                        <p class="name w-100 mb-3 overflow-auto">
+                            {{ module.course_description_content }}
+                        </p>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+            
+        
