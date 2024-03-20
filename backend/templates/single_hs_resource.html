@@ -19,7 +19,12 @@
                             <img src="{{ resource.image }}" class="img-tile img-fluid rounded-start" alt="..."  style="width:200px; height:200px;">
                         </a>    
                       <div class="learn-more" aria-hidden="true">
-                        <a href="{{ resource.web_site_url }}">OPEN RESOURCE</a>
+                        {% if resource.resource_type == 'ToolResource' %}
+                            <a href="{{ resource.web_site_url }}">Open Application</a>
+                        {% else %}
+                            <a href="{{ resource.web_site_url }}">Open Resource</a>
+                        {% endif %}
+
                      </div>
                     
                     </div>
@@ -39,14 +44,15 @@
                         <div style="width:fit-content;">
                             <p class="card-text my-2 fs-6 lh-1.5 fw-light d-flex flex-row justify-content-between w-100 gap-3 rounded p-1"  style="max-width:300px;">
                                 {% if resource.github_url %}
-                                <a href="{{ resource.github_url }}" target="_blank" class="text-decoration-none text-secondary" title="source_code"> <i class="bi bi-github"></i></a>
+                                <a href="{{ resource.github_url }}" target="_blank" class="text-decoration-none text-secondary" title="Source Code"> <i class="bi bi-github"></i></a>
                                 {% endif %}
                                 {% if resource.web_site_url %}
-                                <a href="{{ resource.web_site_url }}" target="_blank" class="text-decoration-none text-secondary" title="web page"> <i class="bi bi-arrow-up-right-square"></i> </a>
+                                <a href="{{ resource.web_site_url }}" target="_blank" class="text-decoration-none text-secondary" title="Web page"> <i class="bi bi-arrow-up-right-square"></i> </a>
                                 {% endif %}
                                 {% if resource.documentation_url %}
-                                <a href="{{ resource.documentation_url }}" target="_blank" class="text-decoration-none text-secondary" title="documentation"> <i class="bi bi-journals"></i> </a>
+                                <a href="{{ resource.documentation_url }}" target="_blank" class="text-decoration-none text-secondary" title="Documentation"> <i class="bi bi-journals"></i> </a>
                                 {% endif %}
+                                <a href="{{ resource.resource_url }}" target="_blank" class="text-decoration-none text-secondary" title="Open HydroShare Resource"> <span class="badge text-bg-secondary">HydroShare</span></a>
                             </p>
                         </div>
                     </div>

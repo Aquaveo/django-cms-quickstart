@@ -18,7 +18,6 @@ const fetchLearningModules = () => {
         body: JSON.stringify(requestData),
     })
         .then(response => {
-            console.log(response);
             document.getElementById('placeholder-hydrolearn-modules').classList.add('hidden'); 
             document.getElementById('hydrolearn-modules-plugin').classList.remove('hidden'); 
 
@@ -27,9 +26,7 @@ const fetchLearningModules = () => {
         }
             return response.json(); // Assuming the response is JSON
         })
-        .then(data => {
-            console.log(data);
-                
+        .then(data => {                
             let modulesHTML = ``
             data['modules'].forEach(module => {
                 modulesHTML += `

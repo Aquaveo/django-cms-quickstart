@@ -43,8 +43,6 @@ class HydroShareResourceListPlugin(CMSPluginBase):
 
     def render(self, context, instance, placeholder):
         create_hydroshare_resources(instance)
-        # instance.updated_version = instance.updated_version + 1
-        # instance.save(update_fields=['updated_version'])
         context = super().render(context, instance, placeholder)
         return context
 
@@ -148,7 +146,8 @@ def create_hydroshare_resources(instance):
             matching_resource_model = get_dict_with_attribute(
                 resources_model, "resource_id", resource_api["resource_id"]
             )
-            # logging.warning(matching_resource_model)
+            logging.warning("this is a matching_resource_model")
+            logging.warning(matching_resource_model)
 
             # If resource found locally, then check last update date
             if matching_resource_model:
@@ -262,6 +261,7 @@ def update_resource(resource, hs, instance):
             if not extract_value_by_name(resource_scrapping.content, "help_page_url")
             else extract_value_by_name(resource_scrapping.content, "help_page_url")
         )
+
     if image_url == "":
         image_url = instance.placeholder_image
 
@@ -275,7 +275,10 @@ def update_resource(resource, hs, instance):
         "unique_identifier": f"{uuid.uuid4()}",
         "resource_id": resource["resource_id"],
         "date_last_updated": resource["date_last_updated"],
+        "resource_type": resource["resource_type"],
+        "resource_url": resource["resource_url"],
     }
+    logging.warning(single_resource)
     return single_resource
 
 
