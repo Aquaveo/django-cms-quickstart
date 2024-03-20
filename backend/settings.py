@@ -49,6 +49,11 @@ INSTALLED_APPS = [
     # Django Filer - optional, but used in most projects
     "filer",
     "easy_thumbnails",
+    # the default publishing implementation - optional, but used in most projects
+    "djangocms_versioning",
+    # the default alias content - optional, but used in most projects
+    "djangocms_alias",
+    "parler",
     # the default CKEditor - optional, but used in most projects
     "djangocms_text_ckeditor",
     # some content plugins - optional, but used in most projects
@@ -323,3 +328,5 @@ CKEDITOR_SETTINGS = {
 }
 
 CMS_COLOR_SCHEME_TOGGLE = True
+CMS_CONFIRM_VERSION4 = True
+DJANGOCMS_VERSIONING_ALLOW_DELETING_VERSIONS = True
