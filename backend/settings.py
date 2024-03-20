@@ -49,11 +49,6 @@ INSTALLED_APPS = [
     # Django Filer - optional, but used in most projects
     "filer",
     "easy_thumbnails",
-    # the default publishing implementation - optional, but used in most projects
-    "djangocms_versioning",
-    # the default alias content - optional, but used in most projects
-    "djangocms_alias",
-    "parler",
     # the default CKEditor - optional, but used in most projects
     "djangocms_text_ckeditor",
     # some content plugins - optional, but used in most projects
@@ -66,7 +61,6 @@ INSTALLED_APPS = [
     "djangocms_attributes_field",
     "djangocms_snippet",
     "djangocms_transfer",
-    "djangocms_history",
     # optional django CMS Frontend modules
     "djangocms_frontend",
     "djangocms_frontend.contrib.accordion",
