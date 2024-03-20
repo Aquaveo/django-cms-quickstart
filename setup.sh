@@ -55,6 +55,9 @@ python manage.py collectstatic --noinput
 python manage.py migrate
 python manage.py makemigrations backend
 python manage.py migrate backend
+python manage.py makemigrations zotero_publications_app
+python manage.py migrate hydrolearn_modules_app
+
 
 if [ -z "${SKIP_CREATION_USER}" ]; then
         python manage.py createsuperuser --noinput --username $DJANGO_SUPERUSER_USERNAME --email $DJANGO_SUPERUSER_EMAIL
