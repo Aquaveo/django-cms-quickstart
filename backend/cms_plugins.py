@@ -71,12 +71,12 @@ class ZoteroBibliographyResourcePlugin(CMSPluginBase):
     # This is key in order to call the API every time the page renders
     # The instance.save calls the pre_save signal which makes the call of the API
     def render(self, context, instance, placeholder):
-        logging.warning("rendering")
+        # logging.warning("rendering")
 
         instance.updated_version = instance.updated_version + 1
         instance.save(update_fields=["updated_version"])
         context = super().render(context, instance, placeholder)
-        logging.warning("finish rendering")
+        # logging.warning("finish rendering")
 
         return context
 
@@ -120,7 +120,7 @@ def create_html_citations(instance):
 
 
 def create_hydroshare_resources(instance):
-    logger.warning(instance.updated_version)
+    # logger.warning(instance.updated_version)
     keywords = []
     json_resources = {"list_resources": []}
     # logging.warning(instance.user,instance.password)
@@ -146,8 +146,8 @@ def create_hydroshare_resources(instance):
             matching_resource_model = get_dict_with_attribute(
                 resources_model, "resource_id", resource_api["resource_id"]
             )
-            logging.warning("this is a matching_resource_model")
-            logging.warning(matching_resource_model)
+            # logging.warning("this is a matching_resource_model")
+            # logging.warning(matching_resource_model)
 
             # If resource found locally, then check last update date
             if matching_resource_model:
@@ -179,7 +179,7 @@ def create_hydroshare_resources(instance):
                 json_resources["list_resources"].append(single_resource)
 
                 instance.resources = json_resources
-        logging.warning(json_resources)
+        # logging.warning(json_resources)
 
         instance.save(update_fields=["resources"])
     except Exception as e:
@@ -278,7 +278,7 @@ def update_resource(resource, hs, instance):
         "resource_type": resource["resource_type"],
         "resource_url": resource["resource_url"],
     }
-    logging.warning(single_resource)
+    # logging.warning(single_resource)
     return single_resource
 
 
