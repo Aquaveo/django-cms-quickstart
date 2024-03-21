@@ -19,7 +19,6 @@ def publications_view(request):
 
     body_unicode = request.body.decode("utf-8")
     body = json.loads(body_unicode)
-    logging.warning(body["library_id"])
     instance = {
         "library_id": body["library_id"],
         "library_type": body["library_type"],
@@ -30,9 +29,12 @@ def publications_view(request):
         "include": "bib,data",
         "style": "apa",
         "sort": "date",
-        "direction": "desc",
+        "direction": "asc",
         "linkwrap": 1,
+        "start": body["start"],
+        "limit": body["limit"],
     }
+    logging.warning(params)
 
     try:
         zot = zotero.Zotero(
@@ -46,12 +48,12 @@ def publications_view(request):
             items = zot.items(**params)
         # Initialize a dictionary to store publications by year
         publications_by_year = {}
-
         # Iterate through the data and populate the dictionary
         for item in items:
             # Extract the year from "parsedDate" (if available)
             parsed_date = item.get("meta", {}).get("parsedDate", "")
-            year = parsed_date.split("-")[0] if parsed_date else "More Publications"
+            year = parsed_date.split("-")[0] if parsed_date else "1300"
+            logging.warning(year)
 
             # Add the publication to the corresponding year's list
             if year not in publications_by_year:
