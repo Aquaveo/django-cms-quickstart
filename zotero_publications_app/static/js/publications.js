@@ -1,7 +1,7 @@
 // if local publications is bigger than one, then used as an start index to fetch new publications.
 
 
-var startLoop = totalLocalPublications > 1 ? totalLocalPublications : 0
+// var startLoop = totalLocalPublications > 1 ? totalLocalPublications : 0
 // var startLoop = 0
 const LIMIT = 10;
 let publicationsData = null
@@ -46,7 +46,10 @@ const fetchPublications = (start) => {
     let newRequestData =  requestData
     newRequestData['start'] = start
     newRequestData['limit'] = LIMIT
-    newRequestData['isRemote'] = total_publications > totalLocalPublications
+    // newRequestData['isRemote'] = total_publications > totalLocalPublications
+    newRequestData['totalLocalPublications'] = totalLocalPublications
+    newRequestData['totalRemotePublications'] = total_publications
+
     newRequestData['instanceID'] = instanceID
     return fetch(url, {
         method: 'POST',
@@ -133,7 +136,6 @@ const get_items_counts = async () => {
         }
 
         const data = await response.json(); // Assuming the response is JSON
-        console.log(data);
         return data['number_items'];
     } catch (error) {
         console.error('Error:', error);
@@ -148,55 +150,109 @@ create_placeholders();
 
 // get the total number of publications in the library
 total_publications = await get_items_counts();
-
-
-
-// while (total_publications < 0) {
 console.log(total_publications)
-if(total_publications > 0){
-    let fetchPromises = [];
+
+
+const fetchAndProcessPublicationsSequentially = async () => {
+
+    // Start the loop based on the total number of local publications
+    let startLoop = totalLocalPublications > 1 ? totalLocalPublications : 0;
+
     let differencePublications = total_publications - totalLocalPublications;
 
-    //making batch requests
-    console.log("difference in publications",differencePublications)
+    // if the difference is negative, it means that publications were deleted, so start with index 0
+    startLoop = differencePublications < 0 ? 0 : startLoop;
+
+    console.log("Difference in publications:", differencePublications);
     
-    // publications were added to the remote library, in this case just add the new ones
-    if (differencePublications > 0){
-        console.log("new applications added")
-        for (var i = 0; i < Math.ceil(differencePublications/LIMIT); i++) {
-            // Collect promises returned by fetchPublications
-                fetchPromises.push(fetchPublications(startLoop));
+    // if new publications were added or deleted, fetch them
+    if (differencePublications !== 0) {
+        // Adjust the loop based on whether you need to add new ones or refetch all
+        let iterations = differencePublications > 0 ? Math.ceil(differencePublications / LIMIT) : Math.ceil(total_publications / LIMIT);
+        console.log("Number of iterations:", iterations);
+
+        
+        for (let i = 0; i < iterations; i++) {
+            try {
+                await fetchPublications(startLoop);
                 startLoop += LIMIT;
-        }
-    }
-    // publications were deleted in the library, in this case just add all of them again
-    else if(differencePublications < 0){
-        console.log("applications deleted")
-        startLoop = 0 //reset the startLoop, we are going to fetch all the publications again
-        for (var i = 0; i < Math.ceil(total_publications/LIMIT); i++) {
-            // Collect promises returned by fetchPublications
-                fetchPromises.push(fetchPublications(startLoop));
-                startLoop += LIMIT;
+            } catch (error) {
+                console.error("Error with one of the fetch operations:", error);
+                // Optionally break or continue based on your error handling preferences
+                break;
+            }
         }
     } 
-    // retrieving from database if they are the same.
-    else{
-        console.log("no changes, retrieving from database")
-        fetchPromises.push(fetchPublications(startLoop));
+    else {
+        console.log("No changes, retrieving from database or using cached data");
+        await fetchPublications(startLoop);
     }
 
-    Promise.all(fetchPromises)
-        .then(() => {
-            loadingHtmlElement.classList.add('hidden');
-        })
-        .catch(error => {
-            console.error("Error with one of the fetch operations:", error);
-        });
+    // Hide the loading HTML element once all operations are complete
+    loadingHtmlElement.classList.add('hidden');
+};
+
+// Ensure to call your function in an async context
+fetchAndProcessPublicationsSequentially().then(() => {
+    console.log("All publications processed.");
+}).catch(error => {
+    console.error("An error occurred during the publication fetching process:", error);
+});
+
+
+
+// //second iteration
+// if(total_publications > 0){
+//     let fetchPromises = [];
+//     let differencePublications = total_publications - totalLocalPublications;
+
+//     //making batch requests
+//     console.log("difference in publications",differencePublications)
     
-}
+//     // publications were added to the remote library, in this case just add the new ones
+//     if (differencePublications > 0){
+//         console.log("new applications added")
+//         for (var i = 0; i < Math.ceil(differencePublications/LIMIT); i++) {
+//             // Collect promises returned by fetchPublications
+//                 fetchPromises.push(fetchPublications(startLoop));
+//                 startLoop += LIMIT;
+//         }
+//     }
+//     // publications were deleted in the library, in this case just add all of them again
+//     else if(differencePublications < 0){
+//         console.log("applications deleted")
+//         startLoop = 0 //reset the startLoop, we are going to fetch all the publications again
+//         for (var i = 0; i < Math.ceil(total_publications/LIMIT); i++) {
+//             // Collect promises returned by fetchPublications
+//                 fetchPromises.push(fetchPublications(startLoop));
+//                 startLoop += LIMIT;
+//         }
+//     } 
+//     // retrieving from database if they are the same.
+//     else{
+//         console.log("no changes, retrieving from database")
+//         fetchPromises.push(fetchPublications(startLoop));
+//     }
+
+//     Promise.all(fetchPromises)
+//         .then(() => {
+//             loadingHtmlElement.classList.add('hidden');
+//         })
+//         .catch(error => {
+//             console.error("Error with one of the fetch operations:", error);
+//         });
+    
 // }
 
 
+
+
+
+
+
+
+
+//first edit 
 
 // if(total_publications > 0){
 //     let fetchPromises = [];

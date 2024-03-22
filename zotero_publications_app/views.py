@@ -5,7 +5,13 @@ import logging
 import json
 
 from .models import ZoteroPublications
-from .utils import get_publications, merge_dict_lists
+from .utils import (
+    get_publications,
+    merge_dicts_with_unique_values,
+    merge_dicts_allow_duplicates,
+    merge_dict_lists,
+    simplify_dict,
+)
 
 logger = logging.getLogger(__name__)
 
@@ -66,24 +72,64 @@ def publications_view(request):
         "limit": body["limit"],
     }
     instance_id = body["instanceID"]
-    is_remote = body["isRemote"]
+    totalLocalPublications = body["totalLocalPublications"]
+    totalRemotePublications = body["totalRemotePublications"]
+    # is_remote = body["isRemote"]
 
     local_instance = ZoteroPublications.objects.get(id=instance_id)
     # logging.warning(local_instance)
-
-    # return
-    if is_remote:
+    #  if added new publications remotely
+    if totalRemotePublications > totalLocalPublications:
+        logging.warning("adding publications")
         publications_by_year = get_publications(instance, params)
+
         new_local_instance_publications = merge_dict_lists(
             local_instance.publications, publications_by_year
         )
-        local_instance.publications = new_local_instance_publications
-        logging.warning("local instance save")
-        logging.warning(local_instance.publications.keys())
-        local_instance.save(update_fields=["publications"])
-    else:
-        publications_by_year = local_instance.publications
 
+        local_instance.publications = new_local_instance_publications
+        local_instance.save(update_fields=["publications"])
+
+    #  if deleted publications remotely
+    if totalRemotePublications < totalLocalPublications:
+        logging.warning("removing publications")
+
+        new_local_instance_publications = get_publications(instance, params)
+        logging.warning(new_local_instance_publications)
+
+        local_instance.publications = new_local_instance_publications
+        local_instance.save(update_fields=["publications"])
+
+    #  if no changes
+    else:
+        logging.warning("no changes")
+
+        new_local_instance_publications = local_instance.publications
+
+    # if is_remote:
+    #     publications_by_year = get_publications(instance, params)
+    #     logging.warning("remote instance")
+    #     sum = 0
+
+    #     logging.warning(publications_by_year.keys())
+    #     logging.warning(local_instance.publications.keys())
+
+    #     new_local_instance_publications = merge_dict_lists(
+    #         local_instance.publications, publications_by_year
+    #     )
+    #     sum = 0
+
+    #     for key, value in new_local_instance_publications.items():
+    #         logging.warning(f"{key}: {len(value)}")
+    #         sum += len(value)
+    #     logging.warning(f"sum: {sum}")
+
+    #     local_instance.publications = new_local_instance_publications
+    #     local_instance.save(update_fields=["publications"])
+    # else:
+    #     publications_by_year = local_instance.publications
+
+    # first edit
     # try:
     #     # Initialize a dictionary to store publications by year
     #     publications_by_year = {}
@@ -113,5 +159,5 @@ def publications_view(request):
 
     # except Exception as e:
     #     publications_by_year = {"Error": [f"The following error: {e}"]}
-
-    return JsonResponse(publications_by_year)
+    publications = simplify_dict(new_local_instance_publications)
+    return JsonResponse(publications)
