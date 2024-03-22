@@ -22,5 +22,4 @@ class ZoteroPlugin(CMSPluginBase):
         logging.warning("init rendering zotero plugin")
         context = super().render(context, instance, placeholder)
         logging.warning("finish rendering zotero plugin")
-
         return context

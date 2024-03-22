@@ -1,14 +1,14 @@
+// if local publications is bigger than one, then used as an start index to fetch new publications.
 
 
-var pubsObject = {}
-var startLoop = 0
-var limit = 25;
-let endLoop = 2;
+var startLoop = totalLocalPublications > 1 ? totalLocalPublications : 0
+// var startLoop = 0
+const LIMIT = 10;
 let publicationsData = null
             
 let publicationsHtmlElement = document.getElementById('publications-html')
 let loadingHtmlElement = document.getElementById('placeholder-publications');
-const sleep = (ms = 0) => new Promise(resolve => setTimeout(resolve, ms));
+
 
 function appendArrayValues(obj1, obj2) {
     let result = {};
@@ -40,24 +40,21 @@ function appendArrayValues(obj1, obj2) {
     return result;
 }
 
-const getCSRFToken = () => {
-    // Attempt to retrieve the CSRF token from the meta tag
-    const token = document.querySelector('meta[name="csrf-token"]').getAttribute('content');
-    return token;
-}        
 
-const fetchPublications = (start,indexLoop) => {
-    // Assuming your Django server is running on localhost:8000
+const fetchPublications = (start) => {
     // Update the URL if your setup is different or if you are using a production server
-    requestData['start'] = start
-    requestData['limit'] = limit
+    let newRequestData =  requestData
+    newRequestData['start'] = start
+    newRequestData['limit'] = LIMIT
+    newRequestData['isRemote'] = total_publications > totalLocalPublications
+    newRequestData['instanceID'] = instanceID
     return fetch(url, {
         method: 'POST',
         headers: {
             'Content-Type': 'application/json',
             'X-CSRFToken': getCSRFToken(), // Include the CSRF token in the request headers
         },
-        body: JSON.stringify(requestData),
+        body: JSON.stringify(newRequestData),
     })
     .then(response => {
 
@@ -100,6 +97,9 @@ const fetchPublications = (start,indexLoop) => {
         console.error('There was a problem with the fetch operation:', error);
     });
 }
+
+
+
 const create_placeholders = () => {
     let placeholdersHtmlElement = document.getElementById('placeholder-publications');
     let htmlPlaceholders = '';
@@ -113,14 +113,76 @@ const create_placeholders = () => {
     placeholdersHtmlElement.innerHTML = htmlPlaceholders;            
 }
 
-window.onload = () => {
-    create_placeholders();
 
+
+
+const get_items_counts = async () => {
+    // function to get total count of items in remote library/collection
+    try {
+        const response = await fetch(url_item_count, {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json',
+                'X-CSRFToken': getCSRFToken(), // Include the CSRF token in the request headers
+            },
+            body: JSON.stringify(requestData),
+        });
+
+        if (!response.ok) {
+            throw new Error('Network response was not ok');
+        }
+
+        const data = await response.json(); // Assuming the response is JSON
+        console.log(data);
+        return data['number_items'];
+    } catch (error) {
+        console.error('Error:', error);
+    }
+};
+
+
+// create placeholders for the loading
+create_placeholders();
+
+
+
+// get the total number of publications in the library
+total_publications = await get_items_counts();
+
+
+
+// while (total_publications < 0) {
+console.log(total_publications)
+if(total_publications > 0){
     let fetchPromises = [];
-    for (var i = 0; i < endLoop; i++) {
-        // Collect promises returned by fetchPublications
-        fetchPromises.push(fetchPublications(startLoop, i));
-        startLoop += limit;
+    let differencePublications = total_publications - totalLocalPublications;
+
+    //making batch requests
+    console.log("difference in publications",differencePublications)
+    
+    // publications were added to the remote library, in this case just add the new ones
+    if (differencePublications > 0){
+        console.log("new applications added")
+        for (var i = 0; i < Math.ceil(differencePublications/LIMIT); i++) {
+            // Collect promises returned by fetchPublications
+                fetchPromises.push(fetchPublications(startLoop));
+                startLoop += LIMIT;
+        }
+    }
+    // publications were deleted in the library, in this case just add all of them again
+    else if(differencePublications < 0){
+        console.log("applications deleted")
+        startLoop = 0 //reset the startLoop, we are going to fetch all the publications again
+        for (var i = 0; i < Math.ceil(total_publications/LIMIT); i++) {
+            // Collect promises returned by fetchPublications
+                fetchPromises.push(fetchPublications(startLoop));
+                startLoop += LIMIT;
+        }
+    } 
+    // retrieving from database if they are the same.
+    else{
+        console.log("no changes, retrieving from database")
+        fetchPromises.push(fetchPublications(startLoop));
     }
 
     Promise.all(fetchPromises)
@@ -130,4 +192,30 @@ window.onload = () => {
         .catch(error => {
             console.error("Error with one of the fetch operations:", error);
         });
-};
+    
+}
+// }
+
+
+
+// if(total_publications > 0){
+//     let fetchPromises = [];
+//     let differencePublications = total_publications - totalLocalPublications;
+
+//     for (var i = 0; i < Math.ceil(total_publications/LIMIT); i++) {
+//         // Collect promises returned by fetchPublications
+//         if(total_publications > startLoop){
+//             fetchPromises.push(fetchPublications(startLoop));
+//             startLoop += LIMIT;
+//         }
+//     }
+    
+//     Promise.all(fetchPromises)
+//         .then(() => {
+//             loadingHtmlElement.classList.add('hidden');
+//         })
+//         .catch(error => {
+//             console.error("Error with one of the fetch operations:", error);
+//         });
+    
+// }

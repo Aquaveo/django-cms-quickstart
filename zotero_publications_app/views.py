@@ -4,6 +4,9 @@ from pyzotero import zotero
 import logging
 import json
 
+from .models import ZoteroPublications
+from .utils import get_publications, merge_dict_lists
+
 logger = logging.getLogger(__name__)
 
 
@@ -11,6 +14,33 @@ def base_view(request):
 
     context = {}
     return render(request, "zotero-publications-base.html", context)
+
+
+# @timeit
+def get_items_number(request):
+    logging.warning("get_items_number")
+
+    body_unicode = request.body.decode("utf-8")
+    body = json.loads(body_unicode)
+    instance = {
+        "library_id": body["library_id"],
+        "library_type": body["library_type"],
+        "api_key": body["api_key"],
+        "collection_id": body["collection_id"],
+    }
+    logging.warning(instance)
+
+    zot = zotero.Zotero(
+        instance.get("library_id"),
+        instance.get("library_type"),
+        instance.get("api_key"),
+    )
+    if instance.get("collection_id"):
+        number_items = zot.num_collectionitems(instance.get("collection_id"))
+    else:
+        number_items = zot.count_items()
+
+    return JsonResponse({"number_items": number_items})
 
 
 def publications_view(request):
@@ -28,41 +58,60 @@ def publications_view(request):
     params = {
         "include": "bib,data",
         "style": "apa",
-        "sort": "date",
-        "direction": "asc",
+        # "sort": "date",
+        "sort": "dateAdded",  # get the latest added
+        "direction": "asc",  # get in asc order, so we can compare the latest added and indexes
         "linkwrap": 1,
         "start": body["start"],
         "limit": body["limit"],
     }
-    logging.warning(params)
+    instance_id = body["instanceID"]
+    is_remote = body["isRemote"]
 
-    try:
-        zot = zotero.Zotero(
-            instance.get("library_id"),
-            instance.get("library_type"),
-            instance.get("api_key"),
+    local_instance = ZoteroPublications.objects.get(id=instance_id)
+    # logging.warning(local_instance)
+
+    # return
+    if is_remote:
+        publications_by_year = get_publications(instance, params)
+        new_local_instance_publications = merge_dict_lists(
+            local_instance.publications, publications_by_year
         )
-        if instance.get("collection_id"):
-            items = zot.collection_items(instance.get("collection_id"), **params)
-        else:
-            items = zot.items(**params)
-        # Initialize a dictionary to store publications by year
-        publications_by_year = {}
-        # Iterate through the data and populate the dictionary
-        for item in items:
-            # Extract the year from "parsedDate" (if available)
-            parsed_date = item.get("meta", {}).get("parsedDate", "")
-            year = parsed_date.split("-")[0] if parsed_date else "1300"
-            logging.warning(year)
+        local_instance.publications = new_local_instance_publications
+        logging.warning("local instance save")
+        logging.warning(local_instance.publications.keys())
+        local_instance.save(update_fields=["publications"])
+    else:
+        publications_by_year = local_instance.publications
 
-            # Add the publication to the corresponding year's list
-            if year not in publications_by_year:
-                publications_by_year[year] = []
-            publications_by_year[year].append(item["bib"])
+    # try:
+    #     # Initialize a dictionary to store publications by year
+    #     publications_by_year = {}
+    #     zot = zotero.Zotero(
+    #         instance.get("library_id"),
+    #         instance.get("library_type"),
+    #         instance.get("api_key"),
+    #     )
+    #     if instance.get("collection_id"):
+    #         items = zot.collection_items(instance.get("collection_id"), **params)
+    #     else:
 
-        publications_by_year
+    #         # logging.warning(number_items)
+    #         items = zot.items(**params)
 
-    except Exception as e:
-        publications_by_year = {"Error": [f"The following error: {e}"]}
+    #         # Iterate through the data and populate the dictionary
+    #         for item in items:
+    #             # Extract the year from "parsedDate" (if available)
+    #             parsed_date = item.get("meta", {}).get("parsedDate", "")
+    #             year = parsed_date.split("-")[0] if parsed_date else "1300"
+    #             # logging.warning(year)
+
+    #             # Add the publication to the corresponding year's list
+    #             if year not in publications_by_year:
+    #                 publications_by_year[year] = []
+    #             publications_by_year[year].append(item["bib"])
+
+    # except Exception as e:
+    #     publications_by_year = {"Error": [f"The following error: {e}"]}
 
     return JsonResponse(publications_by_year)
