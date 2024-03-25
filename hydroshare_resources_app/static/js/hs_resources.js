@@ -72,10 +72,10 @@ const fetchHydroShareResources = () => {
                 if(resource.documentation_url){
                     resourcesHTML +=`<a href="${resource.documentation_url}" target="_blank" class="text-decoration-none text-secondary" title="Documentation"> <i class="bi bi-journals"></i> </a>`
                 }
-                resourcesHTML +=`<a href="${resource.resource_url}" target="_blank" class="text-decoration-none text-secondary" style="font-size: 0.80rem !important;" title="Open HydroShare Resource"> <span class="badge text-bg-secondary">HydroShare</span></a>`
+                // resourcesHTML +=`<a href="${resource.resource_url}" target="_blank" class="text-decoration-none text-secondary" style="font-size: 0.80rem !important;" title="Open HydroShare Resource"> <span class="badge text-bg-secondary">HydroShare</span></a>`
                 resourcesHTML +=`</p></div></div>`
                 
-                resourcesHTML +=`<p class="card-subtitle mb-2 text-muted fst-italic">${resource.subtitle}</p>`
+                resourcesHTML +=`<p class="card-subtitle mb-2 text-muted"><a href="${resource.resource_url}" target="_blank" class="text-decoration-none text-secondary" style="font-size: 0.80rem !important;" title="Open HydroShare Resource"> <span class="badge text-bg-secondary">View on HydroShare</span></a></p>`
 
                 resourcesHTML +=`<div class="d-flex flex-column justify-content-center justify-content-lg-start justify-content-md-start text-center text-lg-start text-md-start h-100">
                                 <p class="name w-100 mb-3 overflow-auto">
