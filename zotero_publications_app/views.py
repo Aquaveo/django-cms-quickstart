@@ -7,10 +7,12 @@ import json
 from .models import ZoteroPublications
 from .utils import (
     get_publications,
-    merge_dicts_with_unique_values,
-    merge_dicts_allow_duplicates,
+    get_local_publciations_count,
     merge_dict_lists,
     simplify_dict,
+    get_all_the_removed_publications_ids,
+    delete_publications_from_local_instance_by_id_list,
+    get_remote_latest_version,
 )
 
 logger = logging.getLogger(__name__)
@@ -34,7 +36,7 @@ def get_items_number(request):
         "api_key": body["api_key"],
         "collection_id": body["collection_id"],
     }
-    logging.warning(instance)
+    # logging.warning(instance)
 
     zot = zotero.Zotero(
         instance.get("library_id"),
@@ -46,12 +48,17 @@ def get_items_number(request):
     else:
         number_items = zot.count_items()
 
+    instanceId = body["instanceID"]
+    local_publications_count = get_local_publciations_count(instanceId)
+    logging.warning(
+        f"local publications count {local_publications_count} vs remote publications count {number_items}"
+    )
+
     return JsonResponse({"number_items": number_items})
 
 
-def publications_view(request):
-    # This dictionary can pass variables to the template.
-    logging.warning("publications_view")
+def initialize_publications_view(request):
+    logging.warning("initialize_publications_view")
 
     body_unicode = request.body.decode("utf-8")
     body = json.loads(body_unicode)
@@ -60,6 +67,7 @@ def publications_view(request):
         "library_type": body["library_type"],
         "api_key": body["api_key"],
         "collection_id": body["collection_id"],
+        "instanceId": body["instanceID"],
     }
     params = {
         "include": "bib,data",
@@ -74,37 +82,193 @@ def publications_view(request):
     instance_id = body["instanceID"]
     totalLocalPublications = body["totalLocalPublications"]
     totalRemotePublications = body["totalRemotePublications"]
-    # is_remote = body["isRemote"]
 
     local_instance = ZoteroPublications.objects.get(id=instance_id)
+    instance["current_local_version"] = local_instance.local_remote_version
+    logging.warning(f"current version: {instance['current_local_version']}")
+
+    latest_version = get_remote_latest_version(instance)
+    logging.warning(f"latest version: {latest_version}")
+
+    publications_by_year = get_publications(instance, params)
+
+    new_local_instance_publications = merge_dict_lists(
+        local_instance.publications, publications_by_year
+    )
+
+    local_instance.publications = new_local_instance_publications
+    local_instance.local_remote_version = latest_version
+    local_instance.save(update_fields=["publications", "local_remote_version"])
+    publications = simplify_dict(new_local_instance_publications)
+    return JsonResponse(publications)
+
+
+def publications_view(request):
+    # This dictionary can pass variables to the template.
+    logging.warning("publications_view")
+
+    body_unicode = request.body.decode("utf-8")
+    body = json.loads(body_unicode)
+    instance = {
+        "library_id": body["library_id"],
+        "library_type": body["library_type"],
+        "api_key": body["api_key"],
+        "collection_id": body["collection_id"],
+        "instanceId": body["instanceID"],
+    }
+    params = {
+        "include": "bib,data",
+        "style": "apa",
+        # "sort": "date",
+        "sort": "dateAdded",  # get the latest added
+        "direction": "asc",  # get in asc order, so we can compare the latest added and indexes
+        "linkwrap": 1,
+        "start": body["start"],
+        "limit": body["limit"],
+    }
+    instance_id = body["instanceID"]
+    totalLocalPublications = body["totalLocalPublications"]
+    totalRemotePublications = body["totalRemotePublications"]
+
+    local_instance = ZoteroPublications.objects.get(id=instance_id)
+    instance["current_local_version"] = local_instance.local_remote_version
+    logging.warning(f"current version: {instance['current_local_version']}")
+
+    latest_version = get_remote_latest_version(instance)
+    logging.warning(f"latest version: {latest_version}")
+
     # logging.warning(local_instance)
-    #  if added new publications remotely
-    if totalRemotePublications > totalLocalPublications:
-        logging.warning("adding publications")
-        publications_by_year = get_publications(instance, params)
+    # if added new publications remotely
+    # if totalRemotePublications > totalLocalPublications:
+    #     logging.warning("adding publications")
+    #     publications_by_year = get_publications(instance, params)
+    #     # for key, value in publications_by_year.items():
+    #     #     for item in value:
+    #     #         logging.warning(f"{item.keys()}")
 
-        new_local_instance_publications = merge_dict_lists(
-            local_instance.publications, publications_by_year
-        )
+    #     # logging.warning("local publications")
 
-        local_instance.publications = new_local_instance_publications
-        local_instance.save(update_fields=["publications"])
+    #     # for key, value in local_instance.publications.items():
+    #     #     for item in value:
+    #     #         logging.warning(f"{item.keys()}")
 
-    #  if deleted publications remotely
-    if totalRemotePublications < totalLocalPublications:
-        logging.warning("removing publications")
+    #     # local_publications_count = get_local_publciations_count(instance_id)
+    #     # logging.warning(local_publications_count)
 
-        new_local_instance_publications = get_publications(instance, params)
-        logging.warning(new_local_instance_publications)
+    #     new_local_instance_publications = merge_dict_lists(
+    #         local_instance.publications, publications_by_year
+    #     )
+    #     # new_local_instance_publications_count = get_merged_publications_count(
+    #     #     new_local_instance_publications
+    #     # )
+    #     # publications_by_year_count = get_merged_publications_count(publications_by_year)
 
-        local_instance.publications = new_local_instance_publications
-        local_instance.save(update_fields=["publications"])
+    #     # logging.warning(
+    #     #     f"{new_local_instance_publications_count} {publications_by_year_count}"
+    #     # )
+
+    #     local_instance.publications = new_local_instance_publications
+
+    # #  if deleted publications remotely
+    # if totalRemotePublications < totalLocalPublications:
+    #     logging.warning("removing publications")
+    #     get_trashed_items_params = {
+    #         "style": "apa",
+    #         "sort": "dateAdded",  # get the latest added
+    #         "direction": "asc",  # get in asc order, so we can compare the latest added and indexes
+    #         "linkwrap": 1,
+    #         "limit": body["limit"],
+    #         "since": local_instance.local_remote_version,
+    #     }
+
+    #     removed_publications_ids = get_all_the_removed_publications_ids(
+    #         instance, get_trashed_items_params
+    #     )
+    #     logging.warning(f"removing publications: {removed_publications_ids}")
+
+    #     logging.warning(f"before_publications")
+
+    #     for key, value in local_instance.publications.items():
+    #         for item in value:
+    #             logging.warning(f"{item.keys()}")
+
+    #     new_local_instance_publications = (
+    #         delete_publications_from_local_instance_by_id_list(
+    #             instance_id, removed_publications_ids
+    #         )
+    #     )
+    #     logging.warning(f"final publications:")
+
+    #     for key, value in new_local_instance_publications.items():
+    #         for item in value:
+    #             logging.warning(f"{item.keys()}")
+
+    #     local_instance.publications = new_local_instance_publications
 
     #  if no changes
-    else:
+    if totalRemotePublications == totalLocalPublications:
         logging.warning("no changes")
-
         new_local_instance_publications = local_instance.publications
+
+    # adding or removing publications
+    if local_instance.local_remote_version != 0:
+
+        # logging.warning("removing publications")
+        get_trashed_items_params = {
+            "style": "apa",
+            "sort": "dateAdded",  # get the latest added
+            "direction": "asc",  # get in asc order, so we can compare the latest added and indexes
+            "linkwrap": 1,
+            "limit": body["limit"],
+            "since": local_instance.local_remote_version,
+        }
+
+        removed_publications_ids = get_all_the_removed_publications_ids(
+            instance, get_trashed_items_params
+        )
+        logging.warning(f"removing publications: {removed_publications_ids}")
+
+        # logging.warning(f"before_publications")
+
+        # for key, value in local_instance.publications.items():
+        #     for item in value:
+        #         logging.warning(f"{item.keys()}")
+
+        new_local_instance_publications = (
+            delete_publications_from_local_instance_by_id_list(
+                instance_id, removed_publications_ids
+            )
+        )
+        # logging.warning(f"final publications:")
+
+        # for key, value in new_local_instance_publications.items():
+        #     for item in value:
+        #         logging.warning(f"{item.keys()}")
+
+        local_instance.publications = new_local_instance_publications
+        params_add = {
+            "include": "bib,data",
+            "style": "apa",
+            "sort": "dateAdded",  # get the latest added
+            "direction": "asc",  # get in asc order, so we can compare the latest added and indexes
+            "linkwrap": 1,
+            "since": local_instance.local_remote_version,
+        }
+        logging.warning(f"adding publications")
+        new_publications = get_publications(instance, params_add)
+        new_local_instance_publications = merge_dict_lists(
+            local_instance.publications, new_publications
+        )
+        local_instance.publications = new_local_instance_publications
+
+    # else:
+    #     publications_by_year = get_publications(instance, params)
+    #     new_local_instance_publications = merge_dict_lists(
+    #         local_instance.publications, publications_by_year
+    #     )
+
+    #     local_instance.publications = new_local_instance_publications
+    #     local_instance.save(update_fields=["publications"])
 
     # if is_remote:
     #     publications_by_year = get_publications(instance, params)
@@ -159,5 +323,8 @@ def publications_view(request):
 
     # except Exception as e:
     #     publications_by_year = {"Error": [f"The following error: {e}"]}
+
+    local_instance.local_remote_version = latest_version
+    local_instance.save(update_fields=["publications", "local_remote_version"])
     publications = simplify_dict(new_local_instance_publications)
     return JsonResponse(publications)

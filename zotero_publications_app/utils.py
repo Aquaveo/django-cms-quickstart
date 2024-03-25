@@ -1,7 +1,34 @@
 from pyzotero import zotero
 import logging
+from .models import ZoteroPublications
 
 logger = logging.getLogger(__name__)
+
+
+def get_local_publciations_count(instanceId):
+    local_instance = ZoteroPublications.objects.get(id=instanceId)
+    count = 0
+    for key, value in local_instance.publications.items():
+        count += len(value)
+    return count
+
+
+def get_merged_publications_count(publications):
+    count = 0
+    for key, value in publications.items():
+        count += len(value)
+    return count
+
+
+def get_remote_latest_version(instance):
+    zot = zotero.Zotero(
+        instance.get("library_id"),
+        instance.get("library_type"),
+        instance.get("api_key"),
+    )
+
+    latest_version = zot.last_modified_version()
+    return latest_version
 
 
 def get_publications(instance, params):
@@ -36,6 +63,81 @@ def get_publications(instance, params):
         publications_by_year = {"Error": [f"The following error: {e}"]}
 
     return publications_by_year
+
+
+def get_trashed_publications_ids(instance, params):
+    zot = zotero.Zotero(
+        instance.get("library_id"),
+        instance.get("library_type"),
+        instance.get("api_key"),
+    )
+
+    # params = {
+    #     "sort": "dateAdded",  # get the latest added
+    #     "direction": "desc",  # get in asc order, so we can compare the latest added and indexes
+    #     "linkwrap": 1,
+    #     "start": 0,
+    #     "limit": 100,
+    # }
+
+    trashed_items_ids = []
+    items_trashed = zot.trash(**params)
+
+    for item in items_trashed:
+        # logging.warning(item)
+        trashed_items_ids.append(item.get("key", ""))
+    return trashed_items_ids
+
+
+def get_deleted_publications_ids(instance):
+    # Initialize a dictionary to store publications by year
+    zot = zotero.Zotero(
+        instance.get("library_id"),
+        instance.get("library_type"),
+        instance.get("api_key"),
+    )
+    params = {
+        "since": instance.get("current_local_version"),
+    }
+
+    deleted_items_ids = []
+
+    deleted_items_ids = zot.deleted(**params).get("items")
+    # logger.warning(deleted_items_ids)
+
+    # for item in deleted_items:
+    #     deleted_items_ids.append(item.get("key", ""))
+
+    return deleted_items_ids
+
+
+def get_all_the_removed_publications_ids(instance, params):
+    trashed_items_ids = get_trashed_publications_ids(instance, params)
+    logger.warning(f"trashed {trashed_items_ids}")
+
+    deleted_items_ids = get_deleted_publications_ids(instance)
+    logger.warning(f"deleted {deleted_items_ids}")
+
+    return trashed_items_ids + deleted_items_ids
+
+
+def delete_publications_from_local_instance_by_id_list(instanceId, id_list):
+
+    local_instance = ZoteroPublications.objects.get(id=instanceId)
+    # for key, value in local_instance.publications.items():
+    #     local_instance.publications[key] = [
+    #         item for item in value if item.get("key", "") not in id_list
+    #     ]
+
+    for key, list_of_dicts in local_instance.publications.items():
+        # Filter out dictionaries whose keys are in the ids_to_delete list
+        local_instance.publications[key] = [
+            d for d in list_of_dicts if list(d.keys())[0] not in id_list
+        ]
+
+    local_instance.save(update_fields=["publications"])
+
+    return local_instance.publications
 
 
 def merge_dicts_with_unique_values(dict1, dict2):

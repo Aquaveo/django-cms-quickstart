@@ -15,7 +15,7 @@
         }
 
         // total remote publications count initialized to -1
-        let total_publications = -1;
+        //let total_publications = -1;
         
         
         // get the local publications count from the plugin instance
@@ -39,7 +39,7 @@
         
         const url_item_count = "{% url 'get-items-count' %}"; //url for items count
         const url = "{% url 'zotero-publications-api' %}"; // url for items retrieval
-
+        const init_pubs_url = "{% url 'init-publications' %}";
     </script>
     <script type="module" src='{% static "js/publications.js" %}'></script>
 {% endaddtoblock %}

@@ -3,7 +3,7 @@
 
 // var startLoop = totalLocalPublications > 1 ? totalLocalPublications : 0
 // var startLoop = 0
-const LIMIT = 10;
+let LIMIT = 10;
 let publicationsData = null
             
 let publicationsHtmlElement = document.getElementById('publications-html')
@@ -39,6 +39,68 @@ function appendArrayValues(obj1, obj2) {
 
     return result;
 }
+
+const inititialFetchPublications = (start) => {
+    // Update the URL if your setup is different or if you are using a production server
+    let newRequestData =  requestData
+    newRequestData['start'] = start
+    newRequestData['limit'] = LIMIT
+    // newRequestData['isRemote'] = total_publications > totalLocalPublications
+    newRequestData['totalLocalPublications'] = totalLocalPublications
+    newRequestData['totalRemotePublications'] = total_publications
+
+    newRequestData['instanceID'] = instanceID
+    return fetch(init_pubs_url, {
+        method: 'POST',
+        headers: {
+            'Content-Type': 'application/json',
+            'X-CSRFToken': getCSRFToken(), // Include the CSRF token in the request headers
+        },
+        body: JSON.stringify(newRequestData),
+    })
+    .then(response => {
+
+        if (!response.ok) {
+            throw new Error('Network response was not ok');
+        }
+            return response.json(); // Assuming the response is JSON
+        })
+
+    .then(data => {
+        console.log(data)
+        loadingHtmlElement.classList.remove('hidden')   
+        if(!publicationsData){
+            publicationsData = data
+        }
+        else{
+            publicationsData = appendArrayValues(publicationsData, data)
+        }
+
+        let publicationsHTML = ``
+
+        for (let [key, value] of Object.entries(publicationsData).reverse()) {
+            
+            //add the year title 
+            if (key === '1300'){
+                key = 'More Publications'
+            }
+            
+            publicationsHTML += `<h2 class="year-style">${key}</h2>`
+            //add the publications
+            value.forEach((publication) => {
+                publicationsHTML += publication
+            })
+        }
+        publicationsHtmlElement.innerHTML = publicationsHTML;
+        
+    // For example, you could iterate over the data and append it to an element in your HTML
+    })
+    .catch(error => {
+        console.error('There was a problem with the fetch operation:', error);
+    });
+}
+
+
 
 
 const fetchPublications = (start) => {
@@ -122,6 +184,8 @@ const create_placeholders = () => {
 const get_items_counts = async () => {
     // function to get total count of items in remote library/collection
     try {
+        let requestDataAdded = requestData;
+        requestDataAdded['instanceID'] = instanceID
         const response = await fetch(url_item_count, {
             method: 'POST',
             headers: {
@@ -149,7 +213,7 @@ create_placeholders();
 
 
 // get the total number of publications in the library
-total_publications = await get_items_counts();
+let total_publications = await get_items_counts();
 console.log(total_publications)
 
 
@@ -165,16 +229,15 @@ const fetchAndProcessPublicationsSequentially = async () => {
 
     console.log("Difference in publications:", differencePublications);
     
-    // if new publications were added or deleted, fetch them
-    if (differencePublications !== 0) {
-        // Adjust the loop based on whether you need to add new ones or refetch all
+    if (totalLocalPublications == 0){
         let iterations = differencePublications > 0 ? Math.ceil(differencePublications / LIMIT) : Math.ceil(total_publications / LIMIT);
+
         console.log("Number of iterations:", iterations);
 
         
         for (let i = 0; i < iterations; i++) {
             try {
-                await fetchPublications(startLoop);
+                await inititialFetchPublications(startLoop);
                 startLoop += LIMIT;
             } catch (error) {
                 console.error("Error with one of the fetch operations:", error);
@@ -182,11 +245,43 @@ const fetchAndProcessPublicationsSequentially = async () => {
                 break;
             }
         }
-    } 
-    else {
-        console.log("No changes, retrieving from database or using cached data");
+    }
+    else{
+        LIMIT = Math.abs(differencePublications) //only search for the most recent items added to the library
         await fetchPublications(startLoop);
     }
+
+
+    // // if new publications were added or deleted, fetch them
+    // if (differencePublications > 0) {
+    //     // Adjust the loop based on whether you need to add new ones or refetch all
+    //     let iterations = differencePublications > 0 ? Math.ceil(differencePublications / LIMIT) : Math.ceil(total_publications / LIMIT);
+
+    //     console.log("Number of iterations:", iterations);
+
+        
+    //     for (let i = 0; i < iterations; i++) {
+    //         try {
+    //             await fetchPublications(startLoop);
+    //             startLoop += LIMIT;
+    //         } catch (error) {
+    //             console.error("Error with one of the fetch operations:", error);
+    //             // Optionally break or continue based on your error handling preferences
+    //             break;
+    //         }
+    //     }
+    // } 
+    // if(differencePublications < 0){
+    //     // let iterations = Math.ceil(total_publications / LIMIT);
+
+    //     LIMIT = Math.abs(differencePublications) //only search for the most recent items added to the library
+    //     await fetchPublications(startLoop);
+
+    // }
+    // if(differencePublications==0) {
+    //     console.log("No changes, retrieving from database or using cached data");
+    //     await fetchPublications(startLoop);
+    // }
 
     // Hide the loading HTML element once all operations are complete
     loadingHtmlElement.classList.add('hidden');

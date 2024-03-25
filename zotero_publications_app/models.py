@@ -13,3 +13,6 @@ class ZoteroPublications(CMSPlugin):
     collection_id = models.CharField(max_length=200, default="", blank=True)
     style = models.CharField(max_length=200, default="apa")
     publications = models.JSONField(editable=False, default=dict)
+    local_remote_version = models.IntegerField(
+        editable=False, default=0
+    )  # This field will be used to store the version of the remote library/collection locally
