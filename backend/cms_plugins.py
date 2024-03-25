@@ -136,7 +136,7 @@ def create_hydroshare_resources(instance):
     try:
         # let's call the resources
         resources_api = hs.resources(subject=keywords)
-        # how about "nwm_portal_app" for "Tool Resources that are part of the apps page, and how about "nwm_portal_data" for Data Resources?
+
         resources_model = instance.resources.get("list_resources", [])
         # logging.warning(resources_model)
 

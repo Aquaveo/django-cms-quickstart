@@ -69,7 +69,7 @@ class ZoteroBibliographyResource(CMSPlugin):
     is_saving = models.BooleanField(default=False, editable=False)
 
 
-# @receiver(post_save, sender=ZoteroBibliographyResource)
+@receiver(post_save, sender=ZoteroBibliographyResource)
 def create_html_citations(sender, instance, *args, **kwargs):
     logger.warning("creating_html_citations ")
     params = {
@@ -80,7 +80,6 @@ def create_html_citations(sender, instance, *args, **kwargs):
         "linkwrap": 1,
     }
     try:
-        time.sleep(5)
 
         zot = zotero.Zotero(
             instance.library_id, instance.library_type, instance.api_key
