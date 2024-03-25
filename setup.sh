@@ -53,11 +53,18 @@ echo >&2 "======================================================================
 
 python manage.py collectstatic --noinput
 python manage.py migrate
+
 python manage.py makemigrations backend
 python manage.py migrate backend
+
 python manage.py makemigrations zotero_publications_app
+python manage.py migrate zotero_publications_app
+
+python manage.py makemigrations hydrolearn_modules_app
 python manage.py migrate hydrolearn_modules_app
 
+python manage.py makemigrations hydroshare_resources_app
+python manage.py migrate hydroshare_resources_app
 
 if [ -z "${SKIP_CREATION_USER}" ]; then
         python manage.py createsuperuser --noinput --username $DJANGO_SUPERUSER_USERNAME --email $DJANGO_SUPERUSER_EMAIL
