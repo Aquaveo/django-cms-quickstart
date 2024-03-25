@@ -59,7 +59,8 @@ const fetchHydroShareResources = () => {
                     <div class="col-12 col-sm-6 col-md-8 col-lg-8 border-light">
                         <div class="card-body h-100">
                             <div class="d-flex align-items-baseline gap-2 justify-content-center justify-content-lg-start justify-content-md-start">
-                                <h5 class="card-title card-h5">${resource.title}</h5>`
+                            
+                                <h6 class="card-title card-h5">${resource.title}</h6>`
 
                 resourcesHTML += `<div style="width:fit-content;">`
                 resourcesHTML +=`<p class="card-text my-2 fs-6 lh-1.5 fw-light d-flex flex-row justify-content-between w-100 gap-3 rounded p-1"  style="max-width:300px;">`
@@ -74,10 +75,11 @@ const fetchHydroShareResources = () => {
                 }
                 // resourcesHTML +=`<a href="${resource.resource_url}" target="_blank" class="text-decoration-none text-secondary" style="font-size: 0.80rem !important;" title="Open HydroShare Resource"> <span class="badge text-bg-secondary">HydroShare</span></a>`
                 resourcesHTML +=`</p></div></div>`
-                
-                resourcesHTML +=`<p class="card-subtitle mb-2 text-muted"><a href="${resource.resource_url}" target="_blank" class="text-decoration-none text-secondary" style="font-size: 0.80rem !important;" title="Open HydroShare Resource"> <span class="badge text-bg-secondary">View on HydroShare</span></a></p>`
 
-                resourcesHTML +=`<div class="d-flex flex-column justify-content-center justify-content-lg-start justify-content-md-start text-center text-lg-start text-md-start h-100">
+                
+                resourcesHTML +=`<p class="card-subtitle mb-2 text-muted d-flex justify-content-center justify-content-lg-start justify-content-md-start justify-content-xl-start"><a href="${resource.resource_url}" target="_blank" class="text-decoration-none text-secondary" style="font-size: 0.80rem !important;" title="Open HydroShare Resource"> <span class="badge text-bg-secondary">View on HydroShare</span></a></p>`
+
+                resourcesHTML +=`<div class="d-flex flex-column justify-content-lg-start justify-content-md-start text-center text-lg-start text-md-start h-100">
                                 <p class="name w-100 mb-3 overflow-auto">
                                     ${resource.abstract}
                                 </p>
