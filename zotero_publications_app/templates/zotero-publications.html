@@ -20,7 +20,7 @@
         
         // get the local publications count from the plugin instance
         let LocalPublicationsObject = JSON.parse(JSON.stringify({{ instance.publications | safe }}));
-        console.log(LocalPublicationsObject);
+        
         let totalLocalPublications = Object.values(LocalPublicationsObject).reduce((sum, currentValue) => {
             return sum + currentValue.length;
         }, 0);

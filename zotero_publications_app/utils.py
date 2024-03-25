@@ -22,9 +22,9 @@ def get_merged_publications_count(publications):
 
 def get_remote_latest_version(instance):
     zot = zotero.Zotero(
-        instance.get("library_id"),
-        instance.get("library_type"),
-        instance.get("api_key"),
+        instance.library_id,
+        instance.library_type,
+        instance.api_key,
     )
 
     latest_version = zot.last_modified_version()
@@ -36,12 +36,12 @@ def get_publications(instance, params):
         # Initialize a dictionary to store publications by year
         publications_by_year = {}
         zot = zotero.Zotero(
-            instance.get("library_id"),
-            instance.get("library_type"),
-            instance.get("api_key"),
+            instance.library_id,
+            instance.library_type,
+            instance.api_key,
         )
-        if instance.get("collection_id"):
-            items = zot.collection_items(instance.get("collection_id"), **params)
+        if instance.collection_id:
+            items = zot.collection_items(instance.collection_id, **params)
         else:
 
             # logging.warning(number_items)
@@ -67,18 +67,10 @@ def get_publications(instance, params):
 
 def get_trashed_publications_ids(instance, params):
     zot = zotero.Zotero(
-        instance.get("library_id"),
-        instance.get("library_type"),
-        instance.get("api_key"),
+        instance.library_id,
+        instance.library_type,
+        instance.api_key,
     )
-
-    # params = {
-    #     "sort": "dateAdded",  # get the latest added
-    #     "direction": "desc",  # get in asc order, so we can compare the latest added and indexes
-    #     "linkwrap": 1,
-    #     "start": 0,
-    #     "limit": 100,
-    # }
 
     trashed_items_ids = []
     items_trashed = zot.trash(**params)
@@ -92,12 +84,12 @@ def get_trashed_publications_ids(instance, params):
 def get_deleted_publications_ids(instance):
     # Initialize a dictionary to store publications by year
     zot = zotero.Zotero(
-        instance.get("library_id"),
-        instance.get("library_type"),
-        instance.get("api_key"),
+        instance.library_id,
+        instance.library_type,
+        instance.api_key,
     )
     params = {
-        "since": instance.get("current_local_version"),
+        "since": instance.local_remote_version,
     }
 
     deleted_items_ids = []
@@ -121,13 +113,7 @@ def get_all_the_removed_publications_ids(instance, params):
     return trashed_items_ids + deleted_items_ids
 
 
-def delete_publications_from_local_instance_by_id_list(instanceId, id_list):
-
-    local_instance = ZoteroPublications.objects.get(id=instanceId)
-    # for key, value in local_instance.publications.items():
-    #     local_instance.publications[key] = [
-    #         item for item in value if item.get("key", "") not in id_list
-    #     ]
+def delete_publications_from_local_instance_by_id_list(local_instance, id_list):
 
     for key, list_of_dicts in local_instance.publications.items():
         # Filter out dictionaries whose keys are in the ids_to_delete list
