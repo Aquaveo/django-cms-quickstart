@@ -13,7 +13,7 @@
     <script>
         // Define the data you want to send. Example data shown here:
         const requestData = {
-            organization: "{{ instance.organization | safe }}",
+            tag_filter: "{{ instance.tag_filter | safe }}",
         };
         const url = "{% url 'hydrolearn-modules-api' %}";
     </script>

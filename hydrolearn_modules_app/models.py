@@ -6,7 +6,7 @@ logger = logging.getLogger(__name__)
 
 
 class HydroLearnModulesList(CMSPlugin):
-    organization = models.CharField(max_length=200, default="", blank=True)
+    tag_filter = models.CharField(max_length=200, default="nwm_portal_module")
     placeholder_image = models.CharField(
         max_length=200, default="https://placehold.co/200"
     )
