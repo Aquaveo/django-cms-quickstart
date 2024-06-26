@@ -37,7 +37,7 @@ const fetchHydroShareResources = () => {
                     <header class="course-image">
                         <div class="cover-image">
                             <a href="${resource.web_site_url}">
-                                <img src="${resource.image}" class="img-tile img-fluid rounded-start" alt="..."  style="width:200px; height:200px;" >
+                                <img src="${resource.image}" class="img-tile img-fluid rounded-start" alt="..."  style="width:auto; height:200px;" >
                             </a> 
                             <div class="learn-more" aria-hidden="true">`
                             if (resource.resource_type == 'ToolResource'){
@@ -52,7 +52,7 @@ const fetchHydroShareResources = () => {
                 else{
                     resourcesHTML += `
                     <a href='javascript:void(0)' class='portfolio-link'>
-                        <img src="${resource.image}" class="img-tile img-fluid rounded-start h-100" alt="..." style="width:200px; height:200px;">
+                        <img src="${resource.image}" class="img-tile img-fluid rounded-start h-100" alt="..." style="width:auto; height:200px;">
                     </a></div>`
                 }
                 resourcesHTML += `

@@ -43,10 +43,8 @@ def hydroshare_resources_view(request):
         resources_api = hs.resources(subject=keywords)
 
         resources_model = instance.resources.get("resources", [])
-        # logging.warning(resources_model)
 
         for resource_api in resources_api:
-            # logging.warning(resource_api['resource_title'])
 
             matching_resource_model = get_dict_with_attribute(
                 resources_model, "resource_id", resource_api["resource_id"]
