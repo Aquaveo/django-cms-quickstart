@@ -81,6 +81,7 @@ INSTALLED_APPS = [
     "zotero_publications_app",
     "hydrolearn_modules_app",
     "hydroshare_resources_app",
+    "hydroshare_community_resources_app",
 ]
 
 MIDDLEWARE = [

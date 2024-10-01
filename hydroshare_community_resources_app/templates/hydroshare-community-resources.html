@@ -1,0 +1,31 @@
+{% load cms_tags sekizai_tags static %}
+<head>
+    {% csrf_token %}
+    <meta name="csrf-token" content="{{ csrf_token }}">
+</head>
+
+{% addtoblock "css" %}
+    <link href="{% static "css/hs_resources.css" %}" rel="stylesheet" />
+
+{% endaddtoblock %}
+
+{% addtoblock "js" %}
+    <script>
+        // Define the data you want to send. Example data shown here:
+        const requestData = {
+            instance_id: "{{ instance.id | safe }}",
+        };
+        const url = "{% url 'update-hydroshare-community-resources' %}";
+    </script>
+    <script defer src="{% static "js/hs_resources.js" %}"></script>
+
+{% endaddtoblock %}
+
+{% block content %}
+
+    <div id="placeholder-hydroshare-resources"></div>
+    <div id="hydroshare-resources-list-plugin" class="hidden"></div>
+
+{% endblock %}
+
+    

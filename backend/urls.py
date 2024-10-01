@@ -9,6 +9,10 @@ urlpatterns = [
     path("zotero_publications_app/", include("zotero_publications_app.urls")),
     path("hydrolearn_modules_app/", include("hydrolearn_modules_app.urls")),
     path("hydroshare_resources_app/", include("hydroshare_resources_app.urls")),
+    path(
+        "hydroshare_community_resources_app/",
+        include("hydroshare_community_resources_app.urls"),
+    ),
 ]
 
 # if settings.DEBUG:
