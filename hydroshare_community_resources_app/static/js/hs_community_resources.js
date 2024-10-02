@@ -32,29 +32,24 @@ const fetchHydroShareResources = () => {
                 <div class="hydroshare_resource card mb-3 w-100 card-height" >
                 <div class="row g-0">
                     <div class="col-12 col-sm-6 col-md-4 col-lg-4 d-flex justify-content-center  align-items-center" >`
-                if (resource.web_site_url){
-                    resourcesHTML += `
-                    <header class="course-image">
-                        <div class="cover-image">
-                            <a href="${resource.web_site_url}">
-                                <img src='${image_url}' class="img-tile img-fluid rounded-start h-100" alt="..." style="width:200px; height:200px;">
-                            </a> 
-                            <div class="learn-more" aria-hidden="true">`
-                            if (resource.resource_type == 'ToolResource'){
-                                resourcesHTML += `<a href="${resource.web_site_url}">Open Application</a>`
-                            }
-                            else{
-                                resourcesHTML += `<a href="${resource.web_site_url}">Open Resource</a>`
-                            }
-                            resourcesHTML += `</div></div></header></div>`
+                    
+                resourcesHTML += `
+                <header class="course-image">
+                    <div class="cover-image">
+                        <a href="${resource.resource_url}">
+                            <img src='${image_url}' class="img-tile img-fluid rounded-start h-100" alt="..." style="width:200px; height:200px;">
+                        </a> 
+                        <div class="learn-more" aria-hidden="true">`
+                        if (resource.resource_type == 'ToolResource'){
+                            resourcesHTML += `<a href="${resource.resource_url}">Open Application</a>`
+                        }
+                        else{
+                            resourcesHTML += `<a href="${resource.resource_url}">Open Resource</a>`
+                        }
+                        resourcesHTML += `</div></div></header></div>`
                 
-                }
-                else{
-                    resourcesHTML += `
-                    <a href='javascript:void(0)' class='portfolio-link'>
-                        <img src='${image_url}' class="img-tile img-fluid rounded-start h-100" alt="..." style="width:200px; height:200px;">
-                    </a></div>`
-                }
+
+
                 resourcesHTML += `
                     <div class="col-12 col-sm-6 col-md-8 col-lg-8 border-light">
                         <div class="card-body h-100">
@@ -64,15 +59,6 @@ const fetchHydroShareResources = () => {
 
                 resourcesHTML += `<div style="width:fit-content;">`
                 resourcesHTML +=`<p class="card-text my-2 fs-6 lh-1.5 fw-light d-flex flex-row justify-content-between w-100 gap-3 rounded p-1"  style="max-width:300px;">`
-                if(resource.github_url){
-                    resourcesHTML +=`<a href="${resource.github_url}" target="_blank" class="text-decoration-none text-secondary" title="Source Code"> <i class="bi bi-github"></i></a>`
-                }
-                if(resource.web_site_url){
-                    resourcesHTML +=`<a href="${resource.web_site_url}" target="_blank" class="text-decoration-none text-secondary" title="Web page"> <i class="bi bi-arrow-up-right-square"></i> </a>`
-                }
-                if(resource.documentation_url){
-                    resourcesHTML +=`<a href="${resource.documentation_url}" target="_blank" class="text-decoration-none text-secondary" title="Documentation"> <i class="bi bi-journals"></i> </a>`
-                }
                 // resourcesHTML +=`<a href="${resource.resource_url}" target="_blank" class="text-decoration-none text-secondary" style="font-size: 0.80rem !important;" title="Open HydroShare Resource"> <span class="badge text-bg-secondary">HydroShare</span></a>`
                 resourcesHTML +=`</p></div></div>`
 

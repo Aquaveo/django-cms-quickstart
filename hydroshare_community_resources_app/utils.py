@@ -97,69 +97,16 @@ def get_most_recent_date(date_local_resource, date_api):
         return False
 
 
-def update_resource(resource, hs, instance):
-    # logging.warning(science_metadata_json)
+def update_resource(resource):
     single_resource = {}
-    if resource["resource_type"] == "ToolResource":
-        science_metadata_json = hs.getScienceMetadata(resource["resource_id"])
-        # logging.warning(f'{science_metadata_json}')
-        image_url = science_metadata_json.get(
-            "app_icon", instance.placeholder_image
-        ).get("value", instance.placeholder_image)
-        web_site_url = (
-            ""
-            if not science_metadata_json.get("app_home_page_url", "")
-            else science_metadata_json.get("app_home_page_url").get("value", "")
-        )
-        github_url = (
-            ""
-            if not science_metadata_json.get("source_code_url", "")
-            else science_metadata_json.get("source_code_url").get("value", "")
-        )
-        help_page_url = (
-            ""
-            if not science_metadata_json.get("help_page_url", "")
-            else science_metadata_json.get("help_page_url").get("value", "")
-        )
-    if resource["resource_type"] == "CompositeResource":
-        resource_scrapping = requests.get(resource["resource_url"])
-        image_url = (
-            instance.placeholder_image
-            if not extract_value_by_name(resource_scrapping.content, "app_icon")
-            else extract_value_by_name(resource_scrapping.content, "app_icon")
-        )
-        web_site_url = (
-            ""
-            if not extract_value_by_name(resource_scrapping.content, "home_page_url")
-            else extract_value_by_name(resource_scrapping.content, "home_page_url")
-        )
-        github_url = (
-            ""
-            if not extract_value_by_name(resource_scrapping.content, "source_code_url")
-            else extract_value_by_name(resource_scrapping.content, "source_code_url")
-        )
-        help_page_url = (
-            ""
-            if not extract_value_by_name(resource_scrapping.content, "help_page_url")
-            else extract_value_by_name(resource_scrapping.content, "help_page_url")
-        )
-
-    if image_url == "":
-        image_url = instance.placeholder_image
-
     single_resource = {
         "title": resource["resource_title"],
         "abstract": resource["abstract"],
-        "github_url": github_url,
-        "image": image_url,
-        "web_site_url": web_site_url,
-        "documentation_url": help_page_url,
         "resource_id": resource["resource_id"],
         "date_last_updated": resource["date_last_updated"],
         "resource_type": resource["resource_type"],
         "resource_url": resource["resource_url"],
     }
-    # logging.warning(single_resource)
     return single_resource
 
 

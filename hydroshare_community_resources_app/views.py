@@ -42,14 +42,19 @@ def hydroshare_community_resources_view(request):
         hs = HydroShare(prompt_auth=False)
     try:
         generators_rs = []
+
+        # GET THE IDS OF THE GROUPS FROM THE COMMUNITY
         group_ids = get_group_ids(instance.community_id)
-        logger.warning(group_ids)
+
+        # QUERY THE RESOURCES OF EACH ONE OF THE GROUPS
         for group_id in group_ids:
             generators_rs.append(hs.resources(group=group_id))
 
+        # JOIN THE RESOURCES OF EACH ONE OF THE GROUPS AND ALSO MAKE SURE NO RESOURCE IS REPEATED
         resources_api = join_generators(generators_rs)
+
+        # FILTER THE RESOURCES BY THE CURATED IDS IF NEEDED
         if is_curated:
-            logger.warning("curated is true")
             curated_ids = get_curated_resources(hs=hs)
             resources_api = filter_resources_list_by_resources_id(
                 resources_api, curated_ids
@@ -57,7 +62,6 @@ def hydroshare_community_resources_view(request):
         resources_model = instance.resources.get("resources", [])
 
         for resource_api in resources_api:
-            logger.warning(resource_api["resource_id"])
             matching_resource_model = get_dict_with_attribute(
                 resources_model, "resource_id", resource_api["resource_id"]
             )
@@ -72,7 +76,7 @@ def hydroshare_community_resources_view(request):
                     is_recent_date
                 ):  # If the resource retrieved from api is more recent, then update resource
                     # logging.warning("resource has a more recent version")
-                    single_resource = update_resource(resource_api, hs, instance)
+                    single_resource = update_resource(resource_api)
                     # logging.warning(single_resource)
                     json_resources["resources"].append(single_resource)
                     instance.resources = json_resources
@@ -83,7 +87,7 @@ def hydroshare_community_resources_view(request):
                     instance.resources = json_resources
             # If the resource is not here then create one
             else:
-                single_resource = update_resource(resource_api, hs, instance)
+                single_resource = update_resource(resource_api)
                 json_resources["resources"].append(single_resource)
 
                 instance.resources = json_resources
