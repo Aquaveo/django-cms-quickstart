@@ -1,0 +1,49 @@
+{% load cms_tags sekizai_tags static %}
+<head>
+    {% csrf_token %}
+    <meta name="csrf-token" content="{{ csrf_token }}">
+</head>
+
+{% addtoblock "css" %}
+    <link href="{% static "css/hs_community_resources.css" %}" rel="stylesheet" />
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.6.0/css/all.min.css" integrity="sha512-Kc323vGBEqzTmouAECnVceyQqyqdsSiqLQISBL29aUW4U/M7pSPA/gEUZQqv1cwx4OnYxTxve5UMg5GT6L4JJg==" crossorigin="anonymous" referrerpolicy="no-referrer" />
+{% endaddtoblock %}
+
+{% addtoblock "js" %}
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.6.0/js/all.min.js" integrity="sha512-6sSYJqDreZRZGkJ3b+YfdhB3MzmuP9R7X1QZ6g5aIXhRvR1Y/N/P47jmnkENm7YL3oqsmI6AK+V6AD99uWDnIw==" crossorigin="anonymous" referrerpolicy="no-referrer"></script>
+    <script>
+        // Define the data you want to send. Example data shown here:
+        var requestData = {
+            instance_id: "{{ instance.id | safe }}",
+            curated: false,
+        };
+        const url = "{% url 'update-hydroshare-community-resources' %}";
+        const image_url = "{% static 'images/files.png' %}"
+        
+    </script>
+    <script defer src="{% static "js/hs_community_resources.js" %}"></script>
+{% endaddtoblock %}
+
+{% block content %}
+    <div class="middle">
+        <h1>CSS Radio Button</h1>
+        <label>
+            <input type="radio" name="radio" value="all" checked />
+            <div class="front-end box">
+                <span>All</span>
+            </div>
+        </label>
+        <label>
+            <input type="radio" name="radio" value="curated" />
+            <div class="back-end box">
+                <span>Curated</span>
+            </div>
+        </label>
+    </div>
+
+    <div id="placeholder-hydroshare-resources"></div>
+    <div id="hydroshare-resources-list-plugin" class="hidden"></div>
+
+{% endblock %}
+
+    

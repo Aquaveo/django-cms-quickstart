@@ -66,6 +66,11 @@ python manage.py migrate hydrolearn_modules_app
 python manage.py makemigrations hydroshare_resources_app
 python manage.py migrate hydroshare_resources_app
 
+python manage.py makemigrations hydroshare_community_resources_app
+python manage.py migrate hydroshare_community_resources_app
+
+
+
 if [ -z "${SKIP_CREATION_USER}" ]; then
         python manage.py createsuperuser --noinput --username $DJANGO_SUPERUSER_USERNAME --email $DJANGO_SUPERUSER_EMAIL
 fi

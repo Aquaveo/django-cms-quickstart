@@ -1,0 +1,179 @@
+:root {
+    --image-width: 200px;
+    --image-height: 200px;
+  }
+
+  .img-tile{
+    object-fit: cover;
+  }
+
+  .name{
+    height: 150px;
+    cursor: pointer;
+  }
+
+    /* Hide scrollbar for Chrome, Safari and Opera */
+  .name::-webkit-scrollbar {
+    display: none;
+  }
+
+  /* Hide scrollbar for IE, Edge and Firefox */
+  .name {
+    -ms-overflow-style: none;  /* IE and Edge */
+    scrollbar-width: none;  /* Firefox */
+  }
+
+  .hydroshare_resource{
+    box-shadow: 0 1px 10px 0 rgba(0,0,0,0.125), inset 0 0 0 1px rgba(255,255,255,0.75);
+    border-color: white;
+    border-bottom: 3px solid #255f9c;
+  }
+  .hydroshare_resource:hover,
+  .hydroshare_resource:focus {
+    background: #f5f5f5;
+    border-color: #bebebe;
+    box-shadow: 0 1px 4px 0 rgba(0,117,180,0.4);
+  }
+  .cover-image {
+    position: relative;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    overflow: hidden;
+    cursor: pointer;
+  }
+  
+  .cover-image img {
+    display: block;
+    width: 100%;
+    transition: filter 0.5s ease; /* Smooth transition for the filter */
+  }
+  
+  .learn-more {
+    position: absolute;
+    color: white;
+    padding: 5px 10px;
+    visibility: hidden;
+    transition: visibility 0s, opacity 0.5s linear; /* Smooth transition for visibility and opacity */
+    opacity: 0;
+    border-color: #255f9c;
+    border-radius: 3px;
+    background: #255f9c;
+  }
+  
+  .cover-image:hover .learn-more {
+    visibility: visible;
+    opacity: 1; /* Make it fully opaque on hover */
+  }
+  
+  .cover-image:hover img {
+    filter: brightness(50%); /* Darken the image */
+  }
+  .learn-more > a {
+    color: inherit;
+    text-decoration: none;
+  }
+
+  .hidden {
+    display: none;
+  }
+  @keyframes placeHolderShimmer{
+    0%{
+        background-position: -800px 0
+    }
+    100%{
+        background-position: 800px 0
+    }
+  }
+  
+  
+  
+  .animated-background {
+    animation-duration: 7s;
+    animation-fill-mode: forwards;
+    animation-iteration-count: infinite;
+    animation-name: placeHolderShimmer;
+    animation-timing-function: linear;
+  }
+  .titles-loading-background{
+    background: #cbcbcb;
+    background: linear-gradient(to right, #cbcbcb 8%, #bbbbbb 18%, #cbcbcb 33%);
+  }
+  .descriptions-background{
+    background: linear-gradient(to right, #eeeeee 8%, #dddddd 18%, #eeeeee 33%);
+  }
+
+  /* The following are css for the toggle */
+  @import url("https://fonts.googleapis.com/css?family=Inter:400'");
+
+  /* Include FontAwesome for icons */
+  @import url("https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css");
+  
+  .middle {
+    width: 100%;
+    padding-bottom: 50px;
+    text-align: center;
+  }
+  
+  .middle h1 {
+    font-family: "Inter", sans-serif;
+    color: #fff;
+  }
+  
+  .middle input[type="radio"] {
+    display: none;
+  }
+  
+  .middle input[type="radio"]:checked + .box {
+    background-color: #19a7ce;
+  }
+  
+  .middle input[type="radio"]:checked + .box span {
+    color: white;
+    transform: translateY(35px); /* Adjusted from 70px */
+  }
+  
+  .middle input[type="radio"]:checked + .box span:before {
+    transform: translateY(0px);
+    opacity: 1;
+  }
+  
+  .middle .box {
+    width: 100px; /* Adjusted from 200px */
+    height: 100px; /* Adjusted from 200px */
+    background-color: #fff;
+    transition: all 250ms ease;
+    will-change: transform;
+    display: inline-block;
+    text-align: center;
+    cursor: pointer;
+    position: relative;
+    font-family: "Inter", sans-serif;
+    font-weight: 900;
+  }
+  
+  .middle .box:active {
+    transform: translateY(5px); /* Adjusted from 10px */
+  }
+  
+  .middle .box span {
+    position: absolute;
+    transform: translate(0, 30px); /* Adjusted from 60px */
+    left: 0;
+    right: 0;
+    transition: all 300ms ease;
+    font-size: 1em; /* Adjusted from 1.5em */
+    user-select: none;
+    color: #19a7ce;
+  }
+  
+  .middle .box span:before {
+    font-size: 0.8em; /* Adjusted from 1.2em */
+    font-family: FontAwesome;
+    display: block;
+    transform: translateY(-40px); /* Adjusted from -80px */
+    opacity: 0;
+    transition: all 300ms ease-in-out;
+    font-weight: normal;
+    color: white;
+  }
