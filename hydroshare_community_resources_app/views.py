@@ -5,6 +5,8 @@ from .utils import (
     get_dict_with_attribute,
     get_most_recent_date,
     update_resource,
+    filter_resources_list_by_resources_id,
+    get_curated_resources,
 )
 
 from .models import (
@@ -30,6 +32,8 @@ def hydroshare_community_resources_view(request):
     body_unicode = request.body.decode("utf-8")
     body = json.loads(body_unicode)
     instance = HydroShareCommunityResourcesList.objects.get(id=body["instance_id"])
+    is_curated = body["curated"]
+
     json_resources = {"resources": []}
     if instance.user != "" and instance.password != "":
         auth = HydroShareAuthBasic(username=instance.user, password=instance.password)
@@ -38,16 +42,21 @@ def hydroshare_community_resources_view(request):
         hs = HydroShare(prompt_auth=False)
     try:
         generators_rs = []
-        logger.warning(instance.community_id)
         group_ids = get_group_ids(instance.community_id)
         for group_id in group_ids:
             generators_rs.append(hs.resources(group=group_id))
 
         resources_api = join_generators(generators_rs)
-        logger.warning(resources_api)
+        if is_curated:
+            logger.warning("curated is true")
+            curated_ids = get_curated_resources(hs=hs)
+            resources_api = filter_resources_list_by_resources_id(
+                resources_api, curated_ids
+            )
         resources_model = instance.resources.get("resources", [])
 
         for resource_api in resources_api:
+
             matching_resource_model = get_dict_with_attribute(
                 resources_model, "resource_id", resource_api["resource_id"]
             )

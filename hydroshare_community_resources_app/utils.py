@@ -3,6 +3,34 @@ from bs4 import BeautifulSoup
 import json
 from itertools import chain
 import datetime
+import re
+
+
+def get_curated_resources(
+    composite_resource_id="302dcbef13614ac486fb260eaa1ca87c", hs=None
+):
+    science = hs.getScienceMetadata(composite_resource_id)
+    relations = science.get("relations", [])
+    resource_ids = []
+    for item in relations:
+        if item.get("type") == "hasPart":
+            value = item.get("value", "")
+            # Regular expression to find the resource ID in the URL
+            match = re.search(
+                r"http://www\.hydroshare\.org/resource/([a-f0-9]{32})", value
+            )
+            if match:
+                resource_id = match.group(1)
+                resource_ids.append(resource_id)
+    return resource_ids
+
+
+def filter_resources_list_by_resources_id(resources, ids):
+    filtered_resources = []
+    for resource in resources:
+        if resource["resource_id"] in ids:
+            filtered_resources.append(resource)
+    return filtered_resources
 
 
 def join_generators(generators):

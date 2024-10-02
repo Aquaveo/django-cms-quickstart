@@ -37,7 +37,7 @@ const fetchHydroShareResources = () => {
                     <header class="course-image">
                         <div class="cover-image">
                             <a href="${resource.web_site_url}">
-                                <img src="${resource.image}" class="img-tile img-fluid rounded-start" alt="..."  style="width:auto; height:200px;" >
+                                <img src='${image_url}' class="img-tile img-fluid rounded-start h-100" alt="..." style="width:200px; height:200px;">
                             </a> 
                             <div class="learn-more" aria-hidden="true">`
                             if (resource.resource_type == 'ToolResource'){
@@ -52,7 +52,7 @@ const fetchHydroShareResources = () => {
                 else{
                     resourcesHTML += `
                     <a href='javascript:void(0)' class='portfolio-link'>
-                        <img src="${resource.image}" class="img-tile img-fluid rounded-start h-100" alt="..." style="width:auto; height:200px;">
+                        <img src='${image_url}' class="img-tile img-fluid rounded-start h-100" alt="..." style="width:200px; height:200px;">
                     </a></div>`
                 }
                 resourcesHTML += `
@@ -98,6 +98,7 @@ const fetchHydroShareResources = () => {
     }
     
 const create_placeholders = () => {
+    console.log('Creating placeholders');
     let placeholdersHtmlElement = document.getElementById('placeholder-hydroshare-resources');
     let htmlPlaceholders = '';
     for(var i = 0; i < 10; i++){
@@ -136,5 +137,38 @@ const create_placeholders = () => {
     placeholdersHtmlElement.innerHTML = htmlPlaceholders;            
 }
 
-create_placeholders();
-fetchHydroShareResources();
+
+document.addEventListener('DOMContentLoaded', function() {
+    // Select all radio buttons with name 'radio'
+    const radioButtons = document.querySelectorAll('input[name="radio"]');
+
+    // Function to handle selection changes
+    function handleSelection(value) {
+        document.getElementById('placeholder-hydroshare-resources').classList.remove('hidden'); 
+        document.getElementById('hydroshare-resources-list-plugin').classList.add('hidden');
+        console.log(`${value.charAt(0).toUpperCase() + value.slice(1)} selected`);
+        requestData.curated = (value === 'curated');
+        create_placeholders();
+        fetchHydroShareResources();
+    }
+
+    // Initial function call based on default selection
+    const selectedRadio = document.querySelector('input[name="radio"]:checked');
+    if (selectedRadio && selectedRadio.value) {
+        handleSelection(selectedRadio.value);
+    } else {
+        console.error('No radio button is selected by default.');
+    }
+
+    // Add event listeners to each radio button
+    radioButtons.forEach(function(radio) {
+        radio.addEventListener('change', function() {
+            if (this.checked) {
+                handleSelection(this.value);
+            }
+        });
+    });
+});
+
+// Inspiration for radio buttons
+// https://codepen.io/gabrielferreira/pen/oYxNVy

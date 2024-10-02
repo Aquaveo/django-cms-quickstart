@@ -102,3 +102,77 @@
   .descriptions-background{
     background: linear-gradient(to right, #eeeeee 8%, #dddddd 18%, #eeeeee 33%);
   }
+
+  /* The following are css for the toggle */
+  @import url("https://fonts.googleapis.com/css?family=Inter:400'");
+
+  /* Include FontAwesome for icons */
+  @import url("https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css");
+  
+  .middle {
+    width: 100%;
+    text-align: center;
+  }
+  
+  .middle h1 {
+    font-family: "Inter", sans-serif;
+    color: #fff;
+  }
+  
+  .middle input[type="radio"] {
+    display: none;
+  }
+  
+  .middle input[type="radio"]:checked + .box {
+    background-color: #19a7ce;
+  }
+  
+  .middle input[type="radio"]:checked + .box span {
+    color: white;
+    transform: translateY(35px); /* Adjusted from 70px */
+  }
+  
+  .middle input[type="radio"]:checked + .box span:before {
+    transform: translateY(0px);
+    opacity: 1;
+  }
+  
+  .middle .box {
+    width: 100px; /* Adjusted from 200px */
+    height: 100px; /* Adjusted from 200px */
+    background-color: #fff;
+    transition: all 250ms ease;
+    will-change: transform;
+    display: inline-block;
+    text-align: center;
+    cursor: pointer;
+    position: relative;
+    font-family: "Inter", sans-serif;
+    font-weight: 900;
+  }
+  
+  .middle .box:active {
+    transform: translateY(5px); /* Adjusted from 10px */
+  }
+  
+  .middle .box span {
+    position: absolute;
+    transform: translate(0, 30px); /* Adjusted from 60px */
+    left: 0;
+    right: 0;
+    transition: all 300ms ease;
+    font-size: 1em; /* Adjusted from 1.5em */
+    user-select: none;
+    color: #19a7ce;
+  }
+  
+  .middle .box span:before {
+    font-size: 0.8em; /* Adjusted from 1.2em */
+    font-family: FontAwesome;
+    display: block;
+    transform: translateY(-40px); /* Adjusted from -80px */
+    opacity: 0;
+    transition: all 300ms ease-in-out;
+    font-weight: normal;
+    color: white;
+  }
