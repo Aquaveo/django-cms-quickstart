@@ -34,8 +34,13 @@ def filter_resources_list_by_resources_id(resources, ids):
 
 
 def join_generators(generators):
-    generator_chain = chain(*generators)
-    return generator_chain
+    seen_resource_ids = set()
+    for gen in generators:
+        for item in gen:
+            resource_id = item.get("resource_id")
+            if resource_id not in seen_resource_ids:
+                seen_resource_ids.add(resource_id)
+                yield item
 
 
 def get_group_ids(community_id):

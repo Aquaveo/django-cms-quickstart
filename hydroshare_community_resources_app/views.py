@@ -43,6 +43,7 @@ def hydroshare_community_resources_view(request):
     try:
         generators_rs = []
         group_ids = get_group_ids(instance.community_id)
+        logger.warning(group_ids)
         for group_id in group_ids:
             generators_rs.append(hs.resources(group=group_id))
 
@@ -56,7 +57,7 @@ def hydroshare_community_resources_view(request):
         resources_model = instance.resources.get("resources", [])
 
         for resource_api in resources_api:
-
+            logger.warning(resource_api["resource_id"])
             matching_resource_model = get_dict_with_attribute(
                 resources_model, "resource_id", resource_api["resource_id"]
             )
