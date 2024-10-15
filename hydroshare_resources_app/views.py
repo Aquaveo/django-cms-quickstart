@@ -25,13 +25,10 @@ def hydroshare_resources_view(request):
     body = json.loads(body_unicode)
 
     instance = HydroShareResourcesList.objects.get(id=body["instance_id"])
-    # logger.warning(instance.updated_version)
     keywords = []
     json_resources = {"resources": []}
-    # logging.warning(instance.user,instance.password)
     if instance.tags:
         keywords = instance.tags.split(",")
-        # logging.warning(keywords)
     if instance.user != "" and instance.password != "":
         auth = HydroShareAuthBasic(username=instance.user, password=instance.password)
         hs = HydroShare(auth=auth)
@@ -49,9 +46,6 @@ def hydroshare_resources_view(request):
             matching_resource_model = get_dict_with_attribute(
                 resources_model, "resource_id", resource_api["resource_id"]
             )
-            # logging.warning("this is a matching_resource_model")
-            # logging.warning(matching_resource_model)
-
             # If resource found locally, then check last update date
             if matching_resource_model:
                 is_recent_date = get_most_recent_date(
@@ -62,27 +56,20 @@ def hydroshare_resources_view(request):
                 if (
                     is_recent_date
                 ):  # If the resource retrieved from api is more recent, then update resource
-                    # logging.warning("resource has a more recent version")
                     single_resource = update_resource(resource_api, hs, instance)
-                    # logging.warning(single_resource)
                     json_resources["resources"].append(single_resource)
                     instance.resources = json_resources
 
                 else:  # resource is the same, then retrive the resource saved locally
-                    # logging.warning("resource is the same")
-
                     single_resource = matching_resource_model
                     json_resources["resources"].append(single_resource)
                     instance.resources = json_resources
             # If the resource is not here then create one
             else:
-                # logging.warning(resource)
-                # logging.warning("resource is new, creating now")
                 single_resource = update_resource(resource_api, hs, instance)
                 json_resources["resources"].append(single_resource)
 
                 instance.resources = json_resources
-        # logging.warning(json_resources)
 
         instance.save(update_fields=["resources"])
         return JsonResponse(json_resources)
