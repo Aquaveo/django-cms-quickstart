@@ -27,17 +27,19 @@
 {% block content %}
     <div class="middle">
         <label>
-            <input type="radio" name="radio" value="all" checked />
-            <div class="front-end box">
-                <span>All</span>
-            </div>
-        </label>
-        <label>
-            <input type="radio" name="radio" value="curated" />
+            <input type="radio" name="radio" value="curated" checked />
             <div class="back-end box">
                 <span>Curated</span>
             </div>
         </label>
+
+        <label>
+            <input type="radio" name="radio" value="all" />
+            <div class="front-end box">
+                <span>All</span>
+            </div>
+        </label>
+
     </div>
 
     <div id="placeholder-hydroshare-resources"></div>
